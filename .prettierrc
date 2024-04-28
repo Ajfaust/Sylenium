@@ -1,6 +1,7 @@
 {
-    "semi": true,
-    "trailingComma": "es5",
-    "singleQuote": true,
-    "printWidth": 80
+  "semi": true,
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "tailwindConfig": "./tailwind.config.ts",
+  "plugins": ["prettier-plugin-tailwindcss"]
 }

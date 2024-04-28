@@ -12,9 +12,19 @@
     "plugin:react/jsx-runtime",
     "plugin:jsx-a11y/recommended",
     "plugin:import/recommended",
+    "plugin:tailwindcss/recommended",
     "prettier"
   ],
-  "ignorePatterns": ["dist", ".eslintrc.json"],
+  "ignorePatterns": [
+    "dist",
+    ".eslintrc.json",
+    "!*.js",
+    "!.storybook",
+    ".*.js",
+    "*.json",
+    "scripts",
+    "src/graphql/generated/*"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
