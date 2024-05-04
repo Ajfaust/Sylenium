@@ -2,6 +2,14 @@
   "semi": true,
   "trailingComma": "es5",
   "printWidth": 80,
-  "tailwindConfig": "./tailwind.config.ts",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "tabWidth": 2,
+  "importOrder": [
+    "^react",
+    "^.(css|scss)$",
+    "<THIRD_PARTY_MODULES>",
+    "^components/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }
