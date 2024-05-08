@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   ScrollArea,
   Table,
@@ -7,13 +7,17 @@ import {
   Text,
   Center,
   Checkbox,
-  Button,
   rem,
   Title,
   NumberFormatter,
-} from "@mantine/core";
-import { FaChevronUp, FaChevronDown, FaPlus } from "react-icons/fa6";
-import classes from "./transactionTable.module.css";
+  Flex,
+  Loader,
+} from '@mantine/core';
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa6';
+import classes from './transactionTable.module.css';
+import cx from 'clsx';
+import NewTransactionModal from './newTransaction';
+import { useQuery } from '@tanstack/react-query';
 
 interface Transaction {
   transactionId: number;
@@ -30,12 +34,16 @@ interface SortThProps {
   onSort(): void;
 }
 
+interface CurrencyProps {
+  value: number;
+}
+
 function SortTh({ children, reversed, onSort }: SortThProps) {
   const Icon = reversed ? FaChevronUp : FaChevronDown;
   return (
     <Table.Th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
-        <Group justify="space-between">
+        <Group justify="space-between" wrap="nowrap">
           <Text fw={500}>{children}</Text>
           <Center className={classes.icon}>
             <Icon
@@ -49,7 +57,21 @@ function SortTh({ children, reversed, onSort }: SortThProps) {
   );
 }
 
-function sortData(data: Transaction[], reversed: boolean) {
+function Currency({ value }: CurrencyProps) {
+  return (
+    <Flex justify="flex-end" align="flex-start" direction="row">
+      <NumberFormatter
+        value={value}
+        fixedDecimalScale
+        decimalScale={2}
+        prefix="$"
+        allowNegative={false}
+      />
+    </Flex>
+  );
+}
+
+function sortData(data: Transaction[], reversed: boolean = false) {
   return [...data].sort((a, b) => {
     // Sort by date
     let result: number = a.date.getTime() - b.date.getTime();
@@ -63,102 +85,77 @@ function sortData(data: Transaction[], reversed: boolean) {
   });
 }
 
-const data: Transaction[] = [
-  {
-    transactionId: 0,
-    date: new Date(2024, 5, 4),
-    notes: "Sample transaction",
-    inflow: 0,
-    outflow: 12.12,
-    cleared: true,
-  },
-  {
-    transactionId: 1,
-    date: new Date(2024, 5, 4),
-    notes: "Sample transaction",
-    inflow: 0,
-    outflow: 5.78,
-    cleared: true,
-  },
-  {
-    transactionId: 2,
-    date: new Date(2024, 5, 6),
-    notes: "Sample transaction",
-    inflow: 33,
-    outflow: 0,
-    cleared: true,
-  },
-  {
-    transactionId: 3,
-    date: new Date(2024, 4, 6),
-    notes: "Sample transaction",
-    inflow: 0,
-    outflow: 10,
-    cleared: true,
-  },
-];
-
 export function TransactionTable() {
-  const [sortedData, setSortedData] = useState<Transaction[]>(data);
   const [sortReversed, setSortReversed] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
+
+  const { isLoading, isFetching, data, error } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: () => {
+      return fetch('/api/transactions')
+        .then((res) => res.json())
+        .catch((error) => console.log(error));
+    },
+  });
+
+  if (isLoading || isFetching) {
+    return <Loader color="grape" />;
+  }
+
+  if (error) {
+    return <span>Something went wrong...</span>;
+  }
 
   const sort = () => {
     setSortReversed(!sortReversed);
-    setSortedData(sortData(data, sortReversed));
+    sortData(data, sortReversed);
   };
 
-  const rows = sortedData.map((row) => (
+  const rows = data?.map((row: Transaction) => (
     <Table.Tr key={row.transactionId}>
-      <Table.Td>{row.date.toLocaleDateString()}</Table.Td>
+      <Table.Td>{new Date(row.date).toLocaleDateString()}</Table.Td>
       <Table.Td>{row.notes}</Table.Td>
       <Table.Td>
-        <NumberFormatter
-          value={row.inflow}
-          decimalScale={2}
-          prefix="$"
-          allowNegative={false}
-        />
+        <Currency value={row.inflow} />
       </Table.Td>
       <Table.Td>
-        <NumberFormatter
-          value={row.outflow}
-          decimalScale={2}
-          prefix="$"
-          allowNegative={false}
-        />
+        <Currency value={row.outflow} />
       </Table.Td>
       <Table.Td>
-        <Checkbox checked={row.cleared} />
+        <Center>
+          <Checkbox checked={row.cleared} readOnly />
+        </Center>
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <>
-      <Group justify="space-between">
+      <Group justify="space-between" my="xl" mx="lg">
         <Title>Transactions</Title>
-        <Button leftSection={<FaPlus size={rem(16)} />}>New Transaction</Button>
+        <NewTransactionModal />
       </Group>
-      <ScrollArea>
+      <ScrollArea onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
         <Table
           horizontalSpacing="md"
           verticalSpacing="xs"
           miw={700}
-          layout="fixed"
           striped
           highlightOnHover
         >
-          <Table.Tbody>
+          <Table.Thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
             <Table.Tr>
               <SortTh reversed={sortReversed} onSort={sort}>
                 Date
               </SortTh>
-              <Table.Th>Notes</Table.Th>
+              <Table.Th w="100%">Notes</Table.Th>
               <Table.Th>Inflow</Table.Th>
               <Table.Th>Outflow</Table.Th>
               <Table.Th>Cleared</Table.Th>
             </Table.Tr>
-          </Table.Tbody>
+          </Table.Thead>
           <Table.Tbody>
             {rows?.length > 0 ? (
               rows

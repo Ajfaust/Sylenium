@@ -1,6 +1,6 @@
-import { AppShell, Burger, Group } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { TransactionTable } from "../components/transactionTable/transactionTable";
+import { AppShell, Burger, Group } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { TransactionTable } from '../components/ledger/transactionTable';
 
 export default function Ledger() {
   const [opened, { toggle }] = useDisclosure();
@@ -8,7 +8,7 @@ export default function Ledger() {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
       <AppShell.Header>
