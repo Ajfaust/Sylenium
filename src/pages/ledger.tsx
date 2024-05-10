@@ -1,12 +1,14 @@
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { TransactionTable } from '../components/ledger/transactionTable';
+import NavBar from '../components/navbar/navbar';
+import { Outlet } from 'react-router-dom';
 
 export default function Ledger() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
     <AppShell
+      layout="alt"
       header={{ height: 60 }}
       navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
@@ -16,9 +18,14 @@ export default function Ledger() {
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar>NavBar</AppShell.Navbar>
+      <AppShell.Navbar p="md">
+        <AppShell.Section>Navbar Header</AppShell.Section>
+        <AppShell.Section grow my="md" component={ScrollArea}>
+          <NavBar />
+        </AppShell.Section>
+      </AppShell.Navbar>
       <AppShell.Main>
-        <TransactionTable />
+        <Outlet />
       </AppShell.Main>
     </AppShell>
   );

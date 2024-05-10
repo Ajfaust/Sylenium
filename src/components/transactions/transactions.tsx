@@ -11,13 +11,11 @@ import {
   Title,
   NumberFormatter,
   Flex,
-  Loader,
 } from '@mantine/core';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa6';
-import classes from './transactionTable.module.css';
+import classes from './transactions.module.css';
 import cx from 'clsx';
 import NewTransactionModal from './newTransaction';
-import { useQuery } from '@tanstack/react-query';
 
 interface Transaction {
   transactionId: number;
@@ -85,26 +83,36 @@ function sortData(data: Transaction[], reversed: boolean = false) {
   });
 }
 
-export function TransactionTable() {
+export function Transactions() {
   const [sortReversed, setSortReversed] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
 
-  const { isLoading, isFetching, data, error } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => {
-      return fetch('/api/transactions')
-        .then((res) => res.json())
-        .catch((error) => console.log(error));
+  // const { isLoading, isFetching, data, error } = useQuery({
+  //   queryKey: ['transactions'],
+  //   queryFn: () => {
+  //     return fetch('/api/transactions')
+  //       .then((res) => res.json())
+  //       .catch((error) => console.log(error));
+  //   },
+  // });
+
+  // if (isLoading || isFetching) {
+  //   return <Loader color="grape" />;
+  // }
+
+  // if (error) {
+  //   return <span>Something went wrong...</span>;
+  // }
+  const data: Transaction[] = [
+    {
+      transactionId: 1,
+      date: new Date(),
+      notes: 'Notes',
+      inflow: 0,
+      outflow: 0,
+      cleared: false,
     },
-  });
-
-  if (isLoading || isFetching) {
-    return <Loader color="grape" />;
-  }
-
-  if (error) {
-    return <span>Something went wrong...</span>;
-  }
+  ];
 
   const sort = () => {
     setSortReversed(!sortReversed);
