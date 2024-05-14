@@ -46,7 +46,6 @@
       "reactVersion": "detect"
     },
     "import/resolver": {
-      "node": true,
       "typescript": true
     }
   },
