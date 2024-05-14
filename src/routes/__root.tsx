@@ -1,25 +1,36 @@
-import { Outlet, createRootRoute, useRouter, type NavigateOptions, type RegisteredRouter, type ToOptions } from "@tanstack/react-router";
+import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { RouterProvider } from 'react-aria-components';
+import { FaFolderClosed, FaMoneyBills } from 'react-icons/fa6';
+
+import { Sidebar } from '@/components/sidebar';
 
 export const Route = createRootRoute({
-  component: RootRoute
+  component: RootRoute,
 });
 
-declare module 'react-aria-components' {
-  interface RouterConfig {
-    href: ToPathOption<RegisteredRouter>;
-    routerOptions: Omit<NavigateOptions, keyof ToOptions>;
-  }
-}
-
 function RootRoute() {
-  let router = useRouter();
   return (
-    <>
-      <RouterProvider navigate={(to: string, options: ToOptions) => router.navigate({to, ...options})} useHref={(to: string) => router.buildLocation(to).href} />
-      <Outlet />
+    <div>
+      <Sidebar
+        sidebarItems={{
+          items: [
+            {
+              label: 'Transactions',
+              href: '/transactions',
+              icon: FaMoneyBills,
+            },
+            {
+              label: 'Categories',
+              href: '/categories',
+              icon: FaFolderClosed,
+            },
+          ],
+        }}
+      />
+      <main className="ml-[300px] mt-5">
+        <Outlet />
+      </main>
       <TanStackRouterDevtools />
-    </>
-  )
+    </div>
+  );
 }

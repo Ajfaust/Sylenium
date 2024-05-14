@@ -3,7 +3,7 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2021": true
+    "es2022": true
   },
   "extends": [
     "eslint:recommended",
@@ -21,17 +21,26 @@
     "!*.js",
     "!.storybook",
     ".*.js",
-    "*.json",
+    "*.config.js",
+    "*.config.ts",
     "scripts",
     "src/graphql/generated/*"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "latest",
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "plugins": ["react", "react-refresh", "react-hooks", "import"],
+  "plugins": [
+    "react",
+    "react-refresh",
+    "react-hooks",
+    "import",
+    "simple-import-sort"
+  ],
   "settings": {
     "react": {
       "reactVersion": "detect"
@@ -46,39 +55,20 @@
       "warn",
       { "allowConstantExport": true }
     ],
-    // Orders imports automatically
-    "import/order": [
-      "error",
-      {
-        "newlines-between": "always",
-        "pathGroups": [
-          {
-            "pattern": "$/**",
-            "group": "internal"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["builtin"],
-        "groups": [
-          ["builtin", "external"],
-          ["internal"],
-          ["parent", "sibling", "index"],
-          "unknown"
-        ],
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
-    ],
     // Throw an error if we import dependencies that are not defined in package.json
     "import/no-default-export": "error",
     // Prefer to use named exports
-    "import/no-extraneous-dependencies": "error"
+    "import/no-extraneous-dependencies": "error",
+    "import/first": "error",
+    "import/no-duplicates": "error",
+
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   "overrides": [
     {
       // Overrides typescript linting
-      "files": ["*.ts", "*.tsx"],
+      "files": ["*.ts", "*.tsx", "*.js"],
       "extends": [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
@@ -87,8 +77,7 @@
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": true
-      },
-      "plugins": ["typescript-eslint"]
+      }
     },
     // To use Jest we need to activate the global variable jest in env, so that ESLint can recognize it.
     {

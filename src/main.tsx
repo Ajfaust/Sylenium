@@ -1,8 +1,9 @@
-import React, { StrictMode } from 'react';
+import { createRouter, NotFoundRoute,RouterProvider} from '@tanstack/react-router';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter, NotFoundRoute } from '@tanstack/react-router';
+
 import { Route as rootRoute } from './routes/__root.tsx';
-import { routeTree } from './routeTree.gen.ts';
+import { routeTree } from './routeTree.gen';
 
 const notFoundRoute = new NotFoundRoute({
   getParentRoute: () => rootRoute,
@@ -19,11 +20,12 @@ declare module '@tanstack/react-router' {
 }
 
 const rootElement = document.getElementById('app')!
+
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <RouterProvider router ={router} />
+      <RouterProvider router={router} />
     </StrictMode>
   )
 }
