@@ -1,10 +1,9 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { FaEllipsis } from 'react-icons/fa6';
+import { FaCheck, FaEllipsis } from 'react-icons/fa6';
 
 import { Button } from '../ui/button';
-import { Checkbox } from '../ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,14 +13,14 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
-export type Transaction = {
+export interface Transaction {
   id: number;
   date: Date;
   notes?: string;
   inflow: number;
   outflow: number;
   cleared: boolean;
-};
+}
 
 const currencyHeader = (title: string) => {
   return <div className="text-right">{title}</div>;
@@ -66,9 +65,9 @@ export const columns: ColumnDef<Transaction>[] = [
     header: () => <div className="text-center">Cleared</div>,
     cell: ({ row }) => {
       return (
-        <div className="text-center">
-          <Checkbox id="cleared" checked={row.getValue('cleared')} disabled />
-        </div>
+        row.getValue('cleared') && (
+          <FaCheck className="mx-auto size-4 text-primary" />
+        )
       );
     },
   },

@@ -11,18 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as TransactionsIndexImport } from './routes/transactions/index'
-import { Route as CategoriesIndexImport } from './routes/categories/index'
+import { Route as TransactionsImport } from './routes/transactions'
 
 // Create/Update Routes
 
-const TransactionsIndexRoute = TransactionsIndexImport.update({
-  path: '/transactions/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CategoriesIndexRoute = CategoriesIndexImport.update({
-  path: '/categories/',
+const TransactionsRoute = TransactionsImport.update({
+  path: '/transactions',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -30,18 +24,11 @@ const CategoriesIndexRoute = CategoriesIndexImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/categories/': {
-      id: '/categories/'
-      path: '/categories/'
-      fullPath: '/categories/'
-      preLoaderRoute: typeof CategoriesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/transactions/': {
-      id: '/transactions/'
-      path: '/transactions/'
-      fullPath: '/transactions/'
-      preLoaderRoute: typeof TransactionsIndexImport
+    '/transactions': {
+      id: '/transactions'
+      path: '/transactions'
+      fullPath: '/transactions'
+      preLoaderRoute: typeof TransactionsImport
       parentRoute: typeof rootRoute
     }
   }
@@ -49,9 +36,6 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  CategoriesIndexRoute,
-  TransactionsIndexRoute,
-})
+export const routeTree = rootRoute.addChildren({ TransactionsRoute })
 
 /* prettier-ignore-end */
