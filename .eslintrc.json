@@ -25,7 +25,8 @@
     "*.config.js",
     "*.config.ts",
     "scripts",
-    "src/graphql/generated/*"
+    "src/graphql/generated/*",
+    "src/components/ui/*"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -63,7 +64,16 @@
     "import/no-duplicates": "error",
 
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+
+    "@typescript-eslint/no-misused-promises": [
+      2,
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ]
   },
   "overrides": [
     {

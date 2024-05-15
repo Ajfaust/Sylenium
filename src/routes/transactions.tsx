@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { columns, Transaction } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
+import { NewTransactionDialog } from '@/components/transactions/new-transaction-form';
 
 const transactionsQueryOptions = queryOptions<Transaction[]>({
   queryKey: ['transactions'],
@@ -26,9 +27,12 @@ function Transactions() {
   const transactions = transactionsQuery.data;
 
   return (
-    <div>
-      <h2 className="text-3xl">Transactions</h2>
-      <div className="container mx-auto py-10">
+    <div className="container">
+      <div className="flex w-full flex-row">
+        <h2 className="grow text-3xl">Transactions</h2>
+        <NewTransactionDialog />
+      </div>
+      <div className="mx-auto py-5">
         <DataTable columns={columns} data={transactions} />
       </div>
     </div>
