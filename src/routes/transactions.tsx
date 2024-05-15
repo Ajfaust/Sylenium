@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { columns, Transaction } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
-import { NewTransactionDialog } from '@/components/transactions/new-transaction-form';
+import { NewTransactionDialog } from '@/components/transactions/new-transaction';
 
 const transactionsQueryOptions = queryOptions<Transaction[]>({
   queryKey: ['transactions'],

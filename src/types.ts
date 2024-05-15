@@ -7,3 +7,13 @@ export interface SidebarItems {
     icon?: IconType;
   }>;
 }
+
+export interface Transaction {
+  transactionId: number;
+  ledgerId: number;
+  date: Date;
+  notes?: string;
+  inflow: number;
+  outflow: number;
+  cleared: boolean;
+}
