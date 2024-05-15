@@ -4,6 +4,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { FaFolderClosed, FaMoneyBills } from 'react-icons/fa6';
 
 import { Sidebar } from '@/components/sidebar';
+import { Toaster } from '@/components/ui/toaster';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -32,6 +33,7 @@ function RootRoute() {
       />
       <main className="ml-[300px] mt-5">
         <Outlet />
+        <Toaster />
       </main>
       <TanStackRouterDevtools />
     </div>

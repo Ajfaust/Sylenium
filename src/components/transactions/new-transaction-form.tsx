@@ -1,11 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FaDollarSign, FaRegCalendar } from 'react-icons/fa6';
+import { FaCircleCheck, FaDollarSign, FaRegCalendar } from 'react-icons/fa6';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -36,6 +38,8 @@ import {
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
+import { useToast } from '../ui/use-toast';
+
 export function NewTransactionDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -57,15 +61,47 @@ export function NewTransactionDialog() {
 // Save form in separate component so it can unmount after dialog is closed
 function NewTransactionForm({ afterSave }: { afterSave: () => void }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ['postTransaction'],
+    mutationFn: onSubmit,
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      toast({
+        description: (
+          <div className="flex flex-row space-x-4 align-middle">
+            <FaCircleCheck color="teal" className="size-7" />
+            <p className="text-base">Transaction added.</p>
+          </div>
+        ),
+      });
+    },
+  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const result = await fetch('/api/transactions', {
+      method: 'POST',
+      body: JSON.stringify(values),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!result.ok) {
+      console.log(result);
+      throw new Error('Transaction not saved');
+    }
+
     afterSave();
   }
 
   dayjs.extend(localizedFormat);
 
   const formSchema = z.object({
+    ledgerId: z.number().nonnegative(),
     date: z.date({
       required_error: 'A transaction date is required.',
     }),
@@ -86,6 +122,7 @@ function NewTransactionForm({ afterSave }: { afterSave: () => void }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      ledgerId: 1,
       date: new Date(),
       notes: '',
       inflow: 0,
@@ -96,7 +133,10 @@ function NewTransactionForm({ afterSave }: { afterSave: () => void }) {
 
   return (
     <Form {...form}>
-      <form className="mt-2 space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="mt-2 space-y-8"
+        onSubmit={form.handleSubmit((values) => mutateAsync(values))}
+      >
         <FormField
           control={form.control}
           name="date"
@@ -233,7 +273,9 @@ function NewTransactionForm({ afterSave }: { afterSave: () => void }) {
               Close
             </Button>
           </DialogClose>
-          <Button type="submit">Add</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <Loader2 className="animate-spin" /> : 'Add'}
+          </Button>
         </DialogFooter>
       </form>
     </Form>
