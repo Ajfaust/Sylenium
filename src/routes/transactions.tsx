@@ -1,20 +1,10 @@
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { DataTable } from '@/components/data-table/data-table';
-import { columns, Transaction } from '@/components/transactions/columns';
+import { columns } from '@/components/transactions/columns';
 import { NewTransactionDialog } from '@/components/transactions/new-transaction';
-
-const transactionsQueryOptions = queryOptions<Transaction[]>({
-  queryKey: ['transactions'],
-  queryFn: async () => {
-    const response = await fetch('/api/transactions');
-    if (!response.ok) {
-      throw new Error('Something went wrong getting transactions');
-    }
-    return response.json();
-  },
-});
+import { transactionsQueryOptions } from '@/hooks/transactions/get-transactions';
 
 export const Route = createFileRoute('/transactions')({
   loader: ({ context: { queryClient } }) =>

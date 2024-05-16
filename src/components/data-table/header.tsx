@@ -1,5 +1,5 @@
 import { Column } from '@tanstack/react-table';
-import { FaEyeSlash, FaSort, FaSortDown, FaSortUp } from 'react-icons/fa6';
+import { FaSort, FaSortDown, FaSortUp } from 'react-icons/fa6';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,10 +20,15 @@ interface DataTableColumnHeaderProps<TData, TValue>
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
+  hidden,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
+  }
+
+  if (hidden && column.getIsVisible()) {
+    column.toggleVisibility();
   }
 
   return (
@@ -55,10 +60,6 @@ export function DataTableColumnHeader<TData, TValue>({
             Desc
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <FaEyeSlash className="mr-2 size-3.5 text-muted-foreground/70" />
-            Hide
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

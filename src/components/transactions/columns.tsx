@@ -1,27 +1,12 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { FaCheck, FaEllipsis } from 'react-icons/fa6';
+import { FaCheck } from 'react-icons/fa6';
+
+import { Transaction } from '@/types';
 
 import { DataTableColumnHeader } from '../data-table/header';
-import { Button } from '../ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-
-export interface Transaction {
-  id: number;
-  date: Date;
-  notes?: string;
-  inflow: number;
-  outflow: number;
-  cleared: boolean;
-}
+import { TransactionDropdownMenu } from './dropdown-menu';
 
 const currencyCell = (row: Row<Transaction>, accessorKey: string) => {
   const amount: number = row.getValue(accessorKey);
@@ -34,6 +19,9 @@ const currencyCell = (row: Row<Transaction>, accessorKey: string) => {
 };
 
 export const columns: ColumnDef<Transaction>[] = [
+  {
+    accessorKey: 'transactionId',
+  },
   {
     accessorKey: 'date',
     header: ({ column }) => (
@@ -101,21 +89,8 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: 'actions',
     header: '',
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="size-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <FaEllipsis className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    cell: ({ row }) => (
+      <TransactionDropdownMenu id={row.getValue('transactionId')} />
     ),
   },
 ];

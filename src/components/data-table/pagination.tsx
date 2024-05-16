@@ -6,14 +6,15 @@ import {
   FaAnglesRight,
 } from 'react-icons/fa6';
 
-import { Button } from '../ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from '@/components/ui/select';
+
+import { Button } from '../ui/button';
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;

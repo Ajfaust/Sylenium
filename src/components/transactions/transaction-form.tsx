@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useCreateTransaction } from '@/hooks/create-transaction';
+import { useCreateTransaction } from '@/hooks/transactions/create-transaction';
 import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
 
