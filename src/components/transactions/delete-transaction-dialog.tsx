@@ -29,8 +29,7 @@ export function DeleteTransactionDialog({
       <DialogFooter className="sm:justify-end">
         <Button
           type="button"
-          variant="outline"
-          className="text-red-600 hover:border-red-500 hover:bg-red-600 hover:text-white"
+          variant="destructiveOutline"
           onClick={() => mutateAsync(id).then(onClose)}
         >
           Yes

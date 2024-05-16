@@ -1,7 +1,7 @@
 import { ColumnDef, Row } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import { FaCheck } from 'react-icons/fa6';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 import { Transaction } from '@/types';
 
@@ -20,6 +20,7 @@ const currencyCell = (row: Row<Transaction>, accessorKey: string) => {
 
 export const columns: ColumnDef<Transaction>[] = [
   {
+    // Hidden row so we can access transaction ID
     accessorKey: 'transactionId',
   },
   {
@@ -81,7 +82,7 @@ export const columns: ColumnDef<Transaction>[] = [
     cell: ({ row }) => {
       return (
         row.getValue('cleared') && (
-          <FaCheck className="mx-auto size-4 text-primary" />
+          <FaCircleCheck className="mx-auto size-4 text-primary" />
         )
       );
     },

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { DeleteTransactionDialog } from './delete-transaction-dialog';
+import { NewEditTransactionDialog } from './new-edit-transaction';
 
 enum Dialogs {
   Edit = 'editDialog',
@@ -45,6 +46,13 @@ export function TransactionDropdownMenu({ id }: { id: number }) {
       <DialogContent className="sm:max-w-md">
         {dialog === Dialogs.Delete && (
           <DeleteTransactionDialog id={id} onClose={() => setOpen(false)} />
+        )}
+        {dialog === Dialogs.Edit && (
+          <NewEditTransactionDialog
+            type="edit"
+            id={id}
+            afterSave={() => setOpen(false)}
+          />
         )}
       </DialogContent>
     </Dialog>

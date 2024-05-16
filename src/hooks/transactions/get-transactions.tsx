@@ -1,13 +1,13 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { Transaction } from '@/types';
 
-export const getTransactions = async (id?: number) => {
-  let api = '/api/transactions';
-  if (id) {
-    api = `${api}/${id}`;
-  }
-  return await fetch(api);
+const getTransactionById = async (id: number): Promise<Transaction> => {
+  return (await fetch(`/api/transactions/${id}`)
+    .then((res) => res.json())
+    .catch((err) => {
+      throw err;
+    })) as Transaction;
 };
 
 export const transactionsQueryOptions = queryOptions<Transaction[]>({
@@ -20,3 +20,10 @@ export const transactionsQueryOptions = queryOptions<Transaction[]>({
     return response.json();
   },
 });
+
+export const useGetTransaction = (id: number) => {
+  return useQuery<Transaction, Error>({
+    queryKey: ['transaction', id],
+    queryFn: () => getTransactionById(id),
+  });
+};

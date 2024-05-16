@@ -26,13 +26,24 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useCreateTransaction } from '@/hooks/transactions/create-transaction';
+import { useGetTransaction } from '@/hooks/transactions/get-transactions';
+import { useUpdateTransaction } from '@/hooks/transactions/update-transaction';
 import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
 
-export function TransactionForm({ afterSave }: { afterSave: () => void }) {
+export function TransactionForm({
+  id,
+  afterSave,
+}: {
+  id?: number;
+  afterSave: () => void;
+}) {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const { mutateAsync, isPending } = useCreateTransaction();
+  const { mutateAsync: createAsync, isPending: createPending } =
+    useCreateTransaction();
+  const { mutateAsync: updateAsync, isPending: updatePending } =
+    useUpdateTransaction();
 
   dayjs.extend(localizedFormat);
 
@@ -56,26 +67,34 @@ export function TransactionForm({ afterSave }: { afterSave: () => void }) {
     cleared: z.boolean(),
   }) satisfies z.ZodType<Transaction>;
 
+  const { data } = useGetTransaction(id ?? -1);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      ledgerId: 1,
-      transactionId: -1,
-      date: new Date(),
-      notes: '',
-      inflow: 0,
-      outflow: 0,
-      cleared: false,
+    values: {
+      ledgerId: data?.ledgerId || 1,
+      transactionId: data?.transactionId || -1,
+      date: data ? new Date(data.date) : new Date(),
+      notes: data?.notes || '',
+      inflow: data?.inflow || 0,
+      outflow: data?.outflow || 0,
+      cleared: data?.cleared || false,
     },
   });
+
+  const onSubmit = (values: Transaction) => {
+    if (id) {
+      return updateAsync(values).then(afterSave);
+    }
+
+    return createAsync(values).then(afterSave);
+  };
 
   return (
     <Form {...form}>
       <form
         className="mt-2 space-y-8"
-        onSubmit={form.handleSubmit((values) =>
-          mutateAsync(values).then(afterSave)
-        )}
+        onSubmit={form.handleSubmit((values) => onSubmit(values))}
       >
         <FormField
           control={form.control}
@@ -213,8 +232,14 @@ export function TransactionForm({ afterSave }: { afterSave: () => void }) {
               Close
             </Button>
           </DialogClose>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? <Loader2 className="animate-spin" /> : 'Add'}
+          <Button type="submit" disabled={createPending || updatePending}>
+            {createPending || updatePending ? (
+              <Loader2 className="animate-spin" />
+            ) : id ? (
+              'Update'
+            ) : (
+              'Add'
+            )}
           </Button>
         </DialogFooter>
       </form>
