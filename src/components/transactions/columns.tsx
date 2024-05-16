@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { FaCheck, FaEllipsis } from 'react-icons/fa6';
 
+import { DataTableColumnHeader } from '../data-table/header';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -22,10 +23,6 @@ export interface Transaction {
   cleared: boolean;
 }
 
-const currencyHeader = (title: string) => {
-  return <div className="text-right">{title}</div>;
-};
-
 const currencyCell = (row: Row<Transaction>, accessorKey: string) => {
   const amount: number = row.getValue(accessorKey);
   const formatted = new Intl.NumberFormat('en-US', {
@@ -39,7 +36,11 @@ const currencyCell = (row: Row<Transaction>, accessorKey: string) => {
 export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: 'date',
-    header: 'Date',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date" />
+    ),
+    enableSorting: true,
+    sortingFn: 'datetime',
     cell: ({ row }) => {
       dayjs.extend(localizedFormat);
       const date = dayjs(row.getValue('date')).format('L');
@@ -48,21 +49,47 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'notes',
-    header: 'Notes',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Notes" />
+    ),
   },
   {
     accessorKey: 'inflow',
-    header: () => currencyHeader('Inflow'),
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Inflow"
+        className="justify-end"
+      />
+    ),
+    enableSorting: true,
+    sortingFn: 'alphanumeric',
     cell: ({ row }) => currencyCell(row, 'inflow'),
   },
   {
     accessorKey: 'outflow',
-    header: () => currencyHeader('Outflow'),
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Outflow"
+        className="justify-end"
+      />
+    ),
+    enableSorting: true,
+    sortingFn: 'alphanumeric',
     cell: ({ row }) => currencyCell(row, 'outflow'),
   },
   {
     accessorKey: 'cleared',
-    header: () => <div className="text-center">Cleared</div>,
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Cleared"
+        className="justify-center"
+      />
+    ),
+    enableSorting: true,
+    sortingFn: 'basic',
     cell: ({ row }) => {
       return (
         row.getValue('cleared') && (

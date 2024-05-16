@@ -1,8 +1,8 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
+import { DataTable } from '@/components/data-table/data-table';
 import { columns, Transaction } from '@/components/transactions/columns';
-import { DataTable } from '@/components/transactions/data-table';
 import { NewTransactionDialog } from '@/components/transactions/new-transaction';
 
 const transactionsQueryOptions = queryOptions<Transaction[]>({
