@@ -8,7 +8,6 @@ import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { categoriesQueryOptions } from '@/hooks/categories/get-categories';
-import { Category } from '@/types';
 
 export const Route = createFileRoute('/categories')({
   loader: ({ context: { queryClient } }) =>
@@ -20,14 +19,6 @@ function Categories() {
   const { data: categories } = useSuspenseQuery(categoriesQueryOptions);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
-  const flattenedCategories: Partial<Category>[] = [];
-  categories.forEach((c) => {
-    flattenedCategories.push({ categoryId: c.categoryId, name: c.name });
-    c.subcategories?.forEach((sc) =>
-      flattenedCategories.push({ categoryId: sc.categoryId, name: sc.name })
-    );
-  });
-
   return (
     <div className="container">
       <div className="flex w-full flex-row">
@@ -37,17 +28,14 @@ function Categories() {
             <Button className="w-36">New Category</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
-            <CategoryForm
-              categories={flattenedCategories}
-              afterSave={() => setDialogOpen(false)}
-            />
+            <CategoryForm afterSave={() => setDialogOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
       <div className="mx-auto py-5">
         <Accordion type="multiple" className="w-full">
           {categories.map((c) => (
-            <CategoryAccordion key={c.categoryId} category={c} />
+            <CategoryAccordion key={c.categoryId} id={c.categoryId} />
           ))}
         </Accordion>
       </div>

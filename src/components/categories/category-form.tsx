@@ -1,9 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { useCreateCategory } from '@/hooks/categories/create-category';
+import {
+  categoriesQueryOptions,
+  useGetCategory,
+} from '@/hooks/categories/get-categories';
+import { useUpdateCategory } from '@/hooks/categories/update-category';
 import { Category } from '@/types';
 
 import { Button } from '../ui/button';
@@ -27,14 +33,16 @@ import {
 } from '../ui/select';
 
 export function CategoryForm({
-  categories,
+  id,
   afterSave,
 }: {
-  categories: Partial<Category>[];
+  id?: number;
   afterSave: () => void;
 }) {
   const { mutateAsync: createAsync, isPending: createPending } =
     useCreateCategory();
+  const { mutateAsync: updateAsync, isPending: updatePending } =
+    useUpdateCategory();
 
   const formSchema = z.object({
     name: z.string().trim().min(1, 'Name cannot be empty or only whitespace'),
@@ -44,22 +52,29 @@ export function CategoryForm({
       .transform((v) => (v !== null && v < 0 ? null : v)),
   }) satisfies z.ZodType<Partial<Category>>;
 
+  const { data: existingCategory } = useGetCategory(id ?? -1);
+  const { data: categories } = useSuspenseQuery(categoriesQueryOptions);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-
-    defaultValues: {
-      name: '',
-      parentId: null,
+    values: {
+      name: existingCategory?.name || '',
+      parentId: existingCategory?.parentId || null,
     },
   });
 
   const onSubmit = (values: Partial<Category>) => {
+    if (id) {
+      values.categoryId = id;
+      return updateAsync(values).then(afterSave);
+    }
+
     return createAsync(values).then(afterSave);
   };
 
   return (
     <>
-      <DialogHeader>New Category</DialogHeader>
+      <DialogHeader>{id ? 'Edit Category' : 'New Category'}</DialogHeader>
       <Form {...form}>
         <form
           className="mt-2 space-y-8"
@@ -99,15 +114,16 @@ export function CategoryForm({
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="-1">None</SelectItem>
-                    {categories.map((c) => (
-                      <SelectItem
-                        key={c.categoryId}
-                        value={c.categoryId?.toString() ?? '-1'}
-                        defaultValue="-1"
-                      >
-                        {c.name}
-                      </SelectItem>
-                    ))}
+                    {categories
+                      .filter((c) => c.categoryId !== id)
+                      .map((c) => (
+                        <SelectItem
+                          key={c.categoryId}
+                          value={c.categoryId?.toString() ?? '-1'}
+                        >
+                          {c.name}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -121,7 +137,11 @@ export function CategoryForm({
               </Button>
             </DialogClose>
             <Button type="submit">
-              {createPending ? <Loader2 className="animate-spin" /> : 'Save'}
+              {createPending || updatePending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                'Save'
+              )}
             </Button>
           </DialogFooter>
         </form>
