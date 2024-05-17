@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FaCircleCheck } from 'react-icons/fa6';
 
+import { TRANSACTIONS_API } from '@/app/consts';
 import { useToast } from '@/components/ui/use-toast';
 
 const deleteTransaction = async (id: number) => {
-  const response = await fetch(`/api/transactions/${id}`, {
+  const response = await fetch(`${TRANSACTIONS_API}/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

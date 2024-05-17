@@ -1,13 +1,25 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { TRANSACTIONS_API } from '@/app/consts';
 import { DataTable } from '@/components/data-table/data-table';
 import { columns } from '@/components/transactions/columns';
 import { NewEditTransactionDialog } from '@/components/transactions/new-edit-transaction';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { transactionsQueryOptions } from '@/hooks/transactions/get-transactions';
+import { Transaction } from '@/types';
+
+const transactionsQueryOptions = queryOptions<Transaction[]>({
+  queryKey: ['transactions', TRANSACTIONS_API],
+  queryFn: async () => {
+    const response = await fetch(TRANSACTIONS_API);
+    if (!response.ok) {
+      throw new Error('Something went wrong getting transactions');
+    }
+    return response.json();
+  },
+});
 
 export const Route = createFileRoute('/transactions')({
   loader: ({ context: { queryClient } }) =>
@@ -17,8 +29,7 @@ export const Route = createFileRoute('/transactions')({
 
 function Transactions() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const transactionsQuery = useSuspenseQuery(transactionsQueryOptions);
-  const transactions = transactionsQuery.data;
+  const { data: transactions } = useSuspenseQuery(transactionsQueryOptions);
 
   return (
     <div className="container">

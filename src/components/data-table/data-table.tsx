@@ -35,6 +35,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     transactionId: false,
+    transactionCategoryId: false,
   });
 
   const table = useReactTable({

@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TransactionsImport } from './routes/transactions'
+import { Route as CategoriesImport } from './routes/categories'
 
 // Create/Update Routes
 
@@ -20,10 +21,22 @@ const TransactionsRoute = TransactionsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CategoriesRoute = CategoriesImport.update({
+  path: '/categories',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/categories': {
+      id: '/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesImport
+      parentRoute: typeof rootRoute
+    }
     '/transactions': {
       id: '/transactions'
       path: '/transactions'
@@ -36,6 +49,9 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ TransactionsRoute })
+export const routeTree = rootRoute.addChildren({
+  CategoriesRoute,
+  TransactionsRoute,
+})
 
 /* prettier-ignore-end */

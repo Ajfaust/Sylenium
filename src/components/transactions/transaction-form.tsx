@@ -48,7 +48,6 @@ export function TransactionForm({
   dayjs.extend(localizedFormat);
 
   const formSchema = z.object({
-    ledgerId: z.number().nonnegative(),
     transactionId: z.number(),
     date: z.date({
       required_error: 'A transaction date is required.',
@@ -72,7 +71,6 @@ export function TransactionForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      ledgerId: data?.ledgerId || 1,
       transactionId: data?.transactionId || -1,
       date: data ? new Date(data.date) : new Date(),
       notes: data?.notes || '',

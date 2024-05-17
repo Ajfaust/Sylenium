@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 
+import { TRANSACTIONS_API } from '@/app/consts';
 import { toast } from '@/components/ui/use-toast';
 import { Transaction } from '@/types';
 
 const updateTransaction = async (transaction: Transaction) => {
-  await fetch(`/api/transactions/${transaction.transactionId}`, {
+  await fetch(`${TRANSACTIONS_API}/${transaction.transactionId}`, {
     method: 'PUT',
     body: JSON.stringify(transaction),
     headers: {

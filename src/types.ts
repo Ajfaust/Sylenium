@@ -10,10 +10,15 @@ export interface SidebarItems {
 
 export interface Transaction {
   transactionId: number;
-  ledgerId: number;
   date: Date;
   notes?: string;
   inflow: number;
   outflow: number;
   cleared: boolean;
+}
+
+export interface Category {
+  categoryId: number;
+  name: string;
+  subcategories?: Category[];
 }
