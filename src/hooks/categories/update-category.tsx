@@ -20,9 +20,9 @@ export const useUpdateCategory = () => {
 
   return useMutation<void, Error, Partial<Category>>({
     mutationFn: updateCategory,
-    onSuccess: async (c) => {
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['category'],
+        queryKey: ['category', 'categories'],
       });
       toast({
         description: (

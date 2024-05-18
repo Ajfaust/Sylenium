@@ -12,8 +12,15 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { CategoryForm } from './category-form';
+import { DeleteCategoryDialog } from './delete-category-dialog';
+
+enum Dialogs {
+  Edit = 'editDialog',
+  Delete = 'deleteDialog',
+}
 
 export function CategoryDropdownMenu({ id }: { id: number }) {
+  const [dialog, setDialog] = useState<string>();
   const [open, setOpen] = useState<boolean>(false);
 
   return (
@@ -28,16 +35,21 @@ export function CategoryDropdownMenu({ id }: { id: number }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DialogTrigger asChild>
+          <DialogTrigger asChild onClick={() => setDialog(Dialogs.Edit)}>
             <DropdownMenuItem>Edit</DropdownMenuItem>
           </DialogTrigger>
-          <DialogTrigger asChild>
+          <DialogTrigger asChild onClick={() => setDialog(Dialogs.Delete)}>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent className="sm:max-w-md">
-        <CategoryForm id={id} afterSave={() => setOpen(false)} />
+        {dialog === Dialogs.Edit && (
+          <CategoryForm id={id} afterSave={() => setOpen(false)} />
+        )}
+        {dialog === Dialogs.Delete && (
+          <DeleteCategoryDialog id={id} onClose={() => setOpen(false)} />
+        )}
       </DialogContent>
     </Dialog>
   );
