@@ -23,3 +23,9 @@ export interface Category {
   parentId: number | null;
   subcategories?: Category[];
 }
+
+export interface FinancialAccount {
+  financialAccountId: number;
+  name: string;
+  transactions: Transaction[];
+}
