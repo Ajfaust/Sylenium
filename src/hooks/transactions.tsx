@@ -1,9 +1,4 @@
-import {
-  queryOptions,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 
 import { toast, useToast } from '@/components/ui/use-toast';
@@ -11,7 +6,7 @@ import { Transaction } from '@/types';
 
 const base_api = '/api/transactions';
 
-const createTransaction = async (t: Transaction) => {
+async function createTransaction(t: Transaction) {
   await fetch(base_api, {
     method: 'POST',
     body: JSON.stringify(t),
@@ -19,55 +14,18 @@ const createTransaction = async (t: Transaction) => {
       'Content-Type': 'application/json',
     },
   });
-};
-
-async function deleteTransaction(id: number) {
-  const response = await fetch(`${base_api}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error();
-  }
 }
 
-const getTransactionById = async (id: number): Promise<Transaction> => {
-  return (await fetch(`${base_api}/${id}`)
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    })) as Transaction;
-};
-
-async function getTransactionsByAccount(accountId: number) {
-  const result = await fetch(`${base_api}/account/${accountId}`);
-  if (!result.ok) {
-    throw new Error('Something went wrong');
-  }
-
-  return result.json();
-}
-
-const updateTransaction = async (transaction: Transaction) => {
-  await fetch(`${base_api}/${transaction.transactionId}`, {
-    method: 'PUT',
-    body: JSON.stringify(transaction),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-};
-
-export const useCreateTransaction = () => {
+function useCreateTransaction() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   return useMutation<void, Error, Transaction>({
     mutationFn: (values) => createTransaction(values),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({
+        queryKey: ['accountTransactions'],
+      });
     },
     onError: (error) => {
       toast({
@@ -82,9 +40,21 @@ export const useCreateTransaction = () => {
       console.log(error);
     },
   });
-};
+}
 
-export function useDeleteTransaction() {
+async function deleteTransaction(id: number) {
+  const response = await fetch(`${base_api}/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!response.ok) {
+    throw new Error();
+  }
+}
+
+function useDeleteTransaction() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -106,24 +76,51 @@ export function useDeleteTransaction() {
   });
 }
 
-export const useGetTransaction = (id: number) => {
+async function getTransactionById(id: number): Promise<Transaction> {
+  return (await fetch(`${base_api}/${id}`)
+    .then((res) => res.json())
+    .catch((err) => {
+      throw err;
+    })) as Transaction;
+}
+
+function useGetTransaction(id: number) {
   return useQuery<Transaction, Error>({
     queryKey: ['transaction', id],
     queryFn: () => getTransactionById(id),
   });
-};
+}
 
-export function accountTransactionsOptions(accountId: number) {
-  return queryOptions<Transaction[]>({
+async function getTransactionsByAccount(accountId: number) {
+  const result = await fetch(`${base_api}/account/${accountId}`);
+  if (!result.ok) {
+    throw new Error('Something went wrong');
+  }
+
+  return result.json();
+}
+
+function useGetTransactionsByAccount(accountId: number) {
+  return useQuery<Transaction[], Error, number>({
     queryKey: ['accountTransactions', accountId],
     queryFn: () => getTransactionsByAccount(accountId),
   });
 }
 
-export const useUpdateTransaction = () => {
+const updateTransaction = async (transaction: Partial<Transaction>) => {
+  await fetch(`${base_api}/${transaction.transactionId}`, {
+    method: 'PUT',
+    body: JSON.stringify(transaction),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+function useUpdateTransaction() {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, Transaction>({
+  return useMutation<void, Error, Partial<Transaction>>({
     mutationFn: (transaction) => updateTransaction(transaction),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -150,4 +147,12 @@ export const useUpdateTransaction = () => {
       console.log(error);
     },
   });
+}
+
+export {
+  useCreateTransaction,
+  useDeleteTransaction,
+  useGetTransaction,
+  useGetTransactionsByAccount,
+  useUpdateTransaction,
 };
