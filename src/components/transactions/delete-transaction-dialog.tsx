@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useDeleteTransaction } from '@/hooks/transactions/delete-transaction';
+import { useDeleteTransaction } from '@/hooks/transactions';
 
 import { Button } from '../ui/button';
 

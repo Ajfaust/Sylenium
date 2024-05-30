@@ -25,9 +25,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useCreateTransaction } from '@/hooks/transactions/create-transaction';
-import { useGetTransaction } from '@/hooks/transactions/get-transactions';
-import { useUpdateTransaction } from '@/hooks/transactions/update-transaction';
+import {
+  useCreateTransaction,
+  useGetTransaction,
+  useUpdateTransaction,
+} from '@/hooks/transactions';
 import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
 
@@ -49,6 +51,8 @@ export function TransactionForm({
 
   const formSchema = z.object({
     transactionId: z.number(),
+    categoryId: z.number(),
+    accountId: z.number(),
     date: z.date({
       required_error: 'A transaction date is required.',
     }),
@@ -71,7 +75,9 @@ export function TransactionForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      transactionId: data?.transactionId || -1,
+      transactionId: data?.transactionId || 0,
+      categoryId: data?.categoryId || 0,
+      accountId: 0,
       date: data ? new Date(data.date) : new Date(),
       notes: data?.notes || '',
       inflow: data?.inflow || 0,

@@ -2,13 +2,14 @@ import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { TRANSACTIONS_API } from '@/app/consts';
 import { DataTable } from '@/components/data-table/data-table';
 import { columns } from '@/components/transactions/columns';
 import { NewEditTransactionDialog } from '@/components/transactions/new-edit-transaction';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Transaction } from '@/types';
+
+const TRANSACTIONS_API = '/Transactions';
 
 const transactionsQueryOptions = queryOptions<Transaction[]>({
   queryKey: ['transactions', TRANSACTIONS_API],

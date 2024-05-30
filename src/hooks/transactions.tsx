@@ -3,18 +3,13 @@ import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 
 import { toast, useToast } from '@/components/ui/use-toast';
 import { Transaction } from '@/types';
-
-const base_api = '/api/transactions';
-
-async function createTransaction(t: Transaction) {
-  await fetch(base_api, {
-    method: 'POST',
-    body: JSON.stringify(t),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-}
+import {
+  createTransaction,
+  deleteTransaction,
+  getTransactionById,
+  getTransactionsByAccount,
+  updateTransaction,
+} from '@/utils/transactions-helper';
 
 function useCreateTransaction() {
   const { toast } = useToast();
@@ -42,18 +37,6 @@ function useCreateTransaction() {
   });
 }
 
-async function deleteTransaction(id: number) {
-  const response = await fetch(`${base_api}/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (!response.ok) {
-    throw new Error();
-  }
-}
-
 function useDeleteTransaction() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -76,14 +59,6 @@ function useDeleteTransaction() {
   });
 }
 
-async function getTransactionById(id: number): Promise<Transaction> {
-  return (await fetch(`${base_api}/${id}`)
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    })) as Transaction;
-}
-
 function useGetTransaction(id: number) {
   return useQuery<Transaction, Error>({
     queryKey: ['transaction', id],
@@ -91,31 +66,12 @@ function useGetTransaction(id: number) {
   });
 }
 
-async function getTransactionsByAccount(accountId: number) {
-  const result = await fetch(`${base_api}/account/${accountId}`);
-  if (!result.ok) {
-    throw new Error('Something went wrong');
-  }
-
-  return result.json();
-}
-
-function useGetTransactionsByAccount(accountId: number) {
-  return useQuery<Transaction[], Error, number>({
+function useGetTransactionsByAccount(accountId: string) {
+  return useQuery<Transaction[], Error>({
     queryKey: ['accountTransactions', accountId],
     queryFn: () => getTransactionsByAccount(accountId),
   });
 }
-
-const updateTransaction = async (transaction: Partial<Transaction>) => {
-  await fetch(`${base_api}/${transaction.transactionId}`, {
-    method: 'PUT',
-    body: JSON.stringify(transaction),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-};
 
 function useUpdateTransaction() {
   const queryClient = useQueryClient();

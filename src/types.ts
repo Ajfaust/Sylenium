@@ -1,15 +1,20 @@
 import { IconType } from 'react-icons';
 
 export interface SidebarItems {
-  items: Array<{
-    label: string;
-    href: string;
-    icon?: IconType;
-  }>;
+  items: Array<SidebarItem>;
+}
+
+export interface SidebarItem {
+  label: string;
+  href: string;
+  icon?: IconType;
+  children?: Array<SidebarItem>;
 }
 
 export interface Transaction {
   transactionId: number;
+  categoryId: number;
+  accountId: number;
   date: Date;
   notes?: string;
   inflow: number;
@@ -24,8 +29,8 @@ export interface Category {
   subcategories?: Category[];
 }
 
-export interface FinancialAccount {
-  financialAccountId: number;
+export interface Account {
+  accountId: number;
   name: string;
-  transactions: Transaction[];
+  balance: number;
 }

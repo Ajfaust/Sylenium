@@ -4,13 +4,13 @@ import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useCreateCategory } from '@/hooks/categories/create-category';
 import {
-  categoriesQueryOptions,
+  useCreateCategory,
   useGetCategory,
-} from '@/hooks/categories/get-categories';
-import { useUpdateCategory } from '@/hooks/categories/update-category';
+  useUpdateCategory,
+} from '@/hooks/categories';
 import { Category } from '@/types';
+import { categoriesQueryOptions } from '@/utils/categories-helper';
 
 import { Button } from '../ui/button';
 import { DialogClose, DialogFooter, DialogHeader } from '../ui/dialog';

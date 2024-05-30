@@ -1,4 +1,4 @@
-import { useGetCategory } from '@/hooks/categories/get-categories';
+import { useGetCategory } from '@/hooks/categories';
 
 import {
   AccordionContent,

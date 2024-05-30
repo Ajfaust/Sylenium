@@ -1,11 +1,11 @@
-import { queryOptions } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
-import { FinancialAccount } from '@/types';
-import { getAccountById } from '@/utils/accounts-helper';
+import { Account } from '@/types';
+import { getAllAccounts } from '@/utils/accounts-helper';
 
-export function getAccountOptions(accountId: number) {
-  return queryOptions<FinancialAccount>({
-    queryKey: ['account', accountId],
-    queryFn: () => getAccountById(accountId),
+export function useGetAccounts() {
+  return useQuery<void, Error, Account[]>({
+    queryKey: ['accounts'],
+    queryFn: getAllAccounts,
   });
 }

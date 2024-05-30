@@ -1,3 +1,5 @@
+import { queryOptions } from '@tanstack/react-query';
+
 import { Transaction } from '@/types';
 
 const base_api = '/api/transactions';
@@ -32,13 +34,14 @@ async function getTransactionById(id: number): Promise<Transaction> {
     })) as Transaction;
 }
 
-async function getTransactionsByAccount(accountId: number) {
-  const result = await fetch(`${base_api}/account/${accountId}`);
-  if (!result.ok) {
-    throw new Error('Something went wrong');
-  }
-
-  return result.json();
+async function getTransactionsByAccount(
+  accountId: string
+): Promise<Transaction[]> {
+  return (await fetch(`${base_api}/${accountId}`)
+    .then((res) => res.json())
+    .catch((err) => {
+      throw err;
+    })) as Transaction[];
 }
 
 const updateTransaction = async (transaction: Partial<Transaction>) => {
@@ -51,10 +54,18 @@ const updateTransaction = async (transaction: Partial<Transaction>) => {
   });
 };
 
+function transactionsQueryOptions(accountId: string) {
+  return queryOptions({
+    queryKey: ['transactions', accountId, base_api],
+    queryFn: () => getTransactionsByAccount(accountId),
+  });
+}
+
 export {
   createTransaction,
   deleteTransaction,
   getTransactionById,
   getTransactionsByAccount,
+  transactionsQueryOptions,
   updateTransaction,
 };

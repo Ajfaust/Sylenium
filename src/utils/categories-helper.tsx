@@ -2,7 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { Category } from '@/types';
 
-const api = '/Categories';
+const api = '/api/categories';
 
 async function createCategory(c: Partial<Category>) {
   await fetch(`${api}/${c.categoryId}`, {

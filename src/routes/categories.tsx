@@ -7,7 +7,7 @@ import { CategoryForm } from '@/components/categories/category-form';
 import { Accordion } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { categoriesQueryOptions } from '@/hooks/categories/get-categories';
+import { categoriesQueryOptions } from '@/utils/categories-helper';
 
 export const Route = createFileRoute('/categories')({
   loader: ({ context: { queryClient } }) =>

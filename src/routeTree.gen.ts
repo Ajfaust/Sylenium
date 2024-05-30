@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TransactionsImport } from './routes/transactions'
 import { Route as CategoriesImport } from './routes/categories'
-import { Route as AccountsFinancialAccountIdImport } from './routes/accounts.$financialAccountId'
+import { Route as AccountsAccountIdImport } from './routes/accounts.$accountId'
 
 // Create/Update Routes
 
@@ -27,12 +27,10 @@ const CategoriesRoute = CategoriesImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AccountsFinancialAccountIdRoute = AccountsFinancialAccountIdImport.update(
-  {
-    path: '/accounts/$financialAccountId',
-    getParentRoute: () => rootRoute,
-  } as any,
-)
+const AccountsAccountIdRoute = AccountsAccountIdImport.update({
+  path: '/accounts/$accountId',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -52,11 +50,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransactionsImport
       parentRoute: typeof rootRoute
     }
-    '/accounts/$financialAccountId': {
-      id: '/accounts/$financialAccountId'
-      path: '/accounts/$financialAccountId'
-      fullPath: '/accounts/$financialAccountId'
-      preLoaderRoute: typeof AccountsFinancialAccountIdImport
+    '/accounts/$accountId': {
+      id: '/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AccountsAccountIdImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,7 +65,31 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   CategoriesRoute,
   TransactionsRoute,
-  AccountsFinancialAccountIdRoute,
+  AccountsAccountIdRoute,
 })
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/categories",
+        "/transactions",
+        "/accounts/$accountId"
+      ]
+    },
+    "/categories": {
+      "filePath": "categories.tsx"
+    },
+    "/transactions": {
+      "filePath": "transactions.tsx"
+    },
+    "/accounts/$accountId": {
+      "filePath": "accounts.$accountId.tsx"
+    }
+  }
+}
+ROUTE_MANIFEST_END */

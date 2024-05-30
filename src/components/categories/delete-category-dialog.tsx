@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useDeleteCategory } from '@/hooks/categories/delete-category';
+import { useDeleteCategory } from '@/hooks/categories';
 
 import { Button } from '../ui/button';
 
