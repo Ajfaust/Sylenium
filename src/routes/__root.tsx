@@ -1,7 +1,7 @@
-import { QueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { FaBuildingColumns, FaFolderClosed } from 'react-icons/fa6';
+import { FaFolderClosed } from 'react-icons/fa6';
 
 import { Sidebar } from '@/components/sidebar';
 import { Toaster } from '@/components/ui/toaster';
@@ -16,21 +16,10 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootRoute() {
-  const { data: accounts } = useSuspenseQuery(allAccountsQueryOptions);
-
   return (
     <div>
       <Sidebar
         sidebarItems={[
-          {
-            label: 'Accounts',
-            href: '',
-            icon: FaBuildingColumns,
-            children: accounts.map((account) => ({
-              label: account.name,
-              href: `/accounts/${account.accountId}`,
-            })),
-          },
           {
             label: 'Categories',
             href: '/categories',

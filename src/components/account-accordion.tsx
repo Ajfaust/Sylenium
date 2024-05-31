@@ -1,45 +1,23 @@
-import { AccordionContent } from '@radix-ui/react-accordion';
-import { Dialog, DialogTrigger } from '@radix-ui/react-dialog';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
+import { Link } from 'lucide-react';
 import { useState } from 'react';
 import { FaBuildingColumns, FaPlus } from 'react-icons/fa6';
 
 import { cn } from '@/lib/utils';
-import { SidebarItem } from '@/types';
 import { allAccountsQueryOptions } from '@/utils/accounts-helper';
 
 import { NewEditAccountDialog } from './accounts/new-edit-account-dialog';
 import { SidebarButton } from './sidebar-button';
-import { Accordion, AccordionItem, AccordionTrigger } from './ui/accordion';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from './ui/accordion';
 import { Button, buttonVariants } from './ui/button';
-import { DialogContent } from './ui/dialog';
+import { Dialog, DialogContent, DialogTrigger } from './ui/dialog';
 
-interface SidebarProps {
-  sidebarItems: Array<SidebarItem>;
-}
-
-export function Sidebar(props: SidebarProps) {
-  return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-[270px] max-w-xs border-r">
-      <div className="h-full px-3 py-4">
-        <h3 className="mx-3 text-lg font-semibold text-foreground">Allosta</h3>
-        <div className="mt-5">
-          <div className="flex w-full flex-col gap-1">
-            <AccountAccordion />
-            {props.sidebarItems.map((item, index) => (
-              <Link key={index} to={item.href}>
-                <SidebarButton icon={item.icon}>{item.label}</SidebarButton>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-function AccountAccordion() {
+export function AccountAccordion() {
   const { data: accounts } = useSuspenseQuery(allAccountsQueryOptions);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
