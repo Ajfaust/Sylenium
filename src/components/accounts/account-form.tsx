@@ -1,11 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { FaDollarSign } from 'react-icons/fa6';
 import { z } from 'zod';
 
 import { Account } from '@/types';
 
+import { Button } from '../ui/button';
+import { DialogClose, DialogFooter } from '../ui/dialog';
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -14,13 +17,7 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
-export function AccountForm({
-  id,
-  afterSave,
-}: {
-  id?: number;
-  afterSave: () => void;
-}) {
+export function AccountForm({ afterSave }: { afterSave: () => void }) {
   const formSchema = z.object({
     name: z.string().trim().min(1, 'Account name cannot be empty'),
     balance: z.number().nonnegative().int(),
@@ -34,12 +31,17 @@ export function AccountForm({
     },
   });
 
+  function onSubmit(values: Partial<Account>) {
+    console.log(values);
+    afterSave();
+  }
+
   return (
     <>
       <Form {...form}>
         <form
           className="mt-2 space-y-8"
-          onSubmit={form.handleSubmit((values) => console.log(values))}
+          onSubmit={form.handleSubmit((values) => onSubmit(values))}
         >
           <FormField
             control={form.control}
@@ -77,6 +79,14 @@ export function AccountForm({
               </FormItem>
             )}
           />
+          <DialogFooter className="sm:justify-end">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button type="submit">Save</Button>
+          </DialogFooter>
         </form>
       </Form>
     </>

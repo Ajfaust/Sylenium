@@ -1,14 +1,13 @@
-import { DialogTitle } from '@radix-ui/react-dialog';
+import { DialogHeader, DialogTitle } from '../ui/dialog';
+import { AccountForm } from './account-form';
 
-import { DialogHeader } from '../ui/dialog';
-
-export function NewEditAccountDialog({ afterSave }: { afterSave: () => void }) {
+export function NewEditAccountDialog() {
   return (
     <>
       <DialogHeader>
         <DialogTitle>New Account</DialogTitle>
       </DialogHeader>
-      <NewEditAccountDialog afterSave={afterSave} />
+      <AccountForm />
     </>
   );
 }
