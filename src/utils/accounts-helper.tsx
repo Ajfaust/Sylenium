@@ -22,6 +22,20 @@ async function getAllAccounts() {
   return result.json();
 }
 
+async function createAccount(account: Partial<Account>) {
+  const result = await fetch(`${api}`, {
+    method: 'POST',
+    body: JSON.stringify(account),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!result.ok) {
+    throw new Error('Could not create account');
+  }
+}
+
 function accountQueryOptions(accountId: string) {
   return queryOptions<Account, Error>({
     queryKey: ['account', accountId, api],
@@ -37,6 +51,7 @@ const allAccountsQueryOptions = queryOptions<Account[], Error>({
 export {
   accountQueryOptions,
   allAccountsQueryOptions,
+  createAccount,
   getAccountById,
   getAllAccounts,
 };

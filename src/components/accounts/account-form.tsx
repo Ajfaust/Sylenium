@@ -1,8 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { FaDollarSign } from 'react-icons/fa6';
 import { z } from 'zod';
 
+import { useCreateAccount } from '@/hooks/accounts';
 import { Account } from '@/types';
 
 import { Button } from '../ui/button';
@@ -18,9 +20,11 @@ import {
 import { Input } from '../ui/input';
 
 export function AccountForm({ afterSave }: { afterSave: () => void }) {
+  const { mutateAsync, isPending } = useCreateAccount();
+
   const formSchema = z.object({
     name: z.string().trim().min(1, 'Account name cannot be empty'),
-    balance: z.number().nonnegative().int(),
+    balance: z.coerce.number().nonnegative().int(),
   }) satisfies z.ZodType<Partial<Account>>;
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,8 +36,7 @@ export function AccountForm({ afterSave }: { afterSave: () => void }) {
   });
 
   function onSubmit(values: Partial<Account>) {
-    console.log(values);
-    afterSave();
+    return mutateAsync(values).then(afterSave);
   }
 
   return (
@@ -85,7 +88,13 @@ export function AccountForm({ afterSave }: { afterSave: () => void }) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Save</Button>
+            <Button type="submit">
+              { isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                'Save'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </Form>
