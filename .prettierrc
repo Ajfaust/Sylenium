@@ -3,5 +3,6 @@
   "trailingComma": "es5",
   "printWidth": 80,
   "tailwindConfig": "./tailwind.config.ts",
-  "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "singleQuote": true
 }
