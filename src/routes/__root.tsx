@@ -1,7 +1,8 @@
 import {
   type NavigateOptions,
   Outlet,
-  type ToOptions,
+  RegisteredRouter,
+  ToPathOption,
   createRootRoute,
   useRouter,
 } from '@tanstack/react-router';
@@ -14,8 +15,8 @@ export const Route = createRootRoute({
 
 declare module 'react-aria-components' {
   interface RouterConfig {
-    href: ToOptions['to'];
-    routerOptions: Omit<NavigateOptions, keyof ToOptions['to']>;
+    href: ToPathOption<RegisteredRouter, '/', '/'> | ({} & string);
+    routerOptions: Omit<NavigateOptions, 'to' | 'from'>;
   }
 }
 
@@ -23,8 +24,13 @@ function RootRoute() {
   let router = useRouter();
   return (
     <RouterProvider
-      navigate={(to, options) => router.navigate({ to, ...options })}
-      useHref={(to) => router.buildLocation(to ?? '').href}
+      navigate={(to, options) =>
+        router.navigate({
+          ...options,
+          to: to as ToPathOption<RegisteredRouter, '/', '/'>,
+        })
+      }
+      useHref={(to) => router.buildLocation(to).href}
     >
       <Outlet />
       <TanStackRouterDevtools />
