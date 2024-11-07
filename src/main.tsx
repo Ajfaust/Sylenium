@@ -1,27 +1,23 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import {
-  createRouter,
-  NotFoundRoute,
-  RouterProvider,
-} from '@tanstack/react-router';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { Route as rootRoute } from './routes/__root.tsx';
 import { routeTree } from './routeTree.gen';
 
 const queryClient = new QueryClient();
 
-const notFoundRoute = new NotFoundRoute({
-  getParentRoute: () => rootRoute,
-  component: () => '404 Not Found',
-});
-
 const router = createRouter({
   routeTree,
   context: { queryClient },
-  notFoundRoute,
+  defaultNotFoundComponent: () => {
+    return (
+      <div>
+        <p>Not found!</p>
+      </div>
+    );
+  },
 });
 
 // Register the router instance for type safety

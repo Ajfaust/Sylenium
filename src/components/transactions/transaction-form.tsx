@@ -32,6 +32,7 @@ import {
   useUpdateTransaction,
 } from '@/hooks/transactions';
 import { cn } from '@/lib/utils';
+import { formSchema } from '@/schema';
 import { Transaction } from '@/types';
 
 export function TransactionForm({
@@ -50,45 +51,23 @@ export function TransactionForm({
   const { mutateAsync: updateAsync, isPending: updatePending } =
     useUpdateTransaction();
 
-  const { data } = useGetTransaction(transactionId);
-
   dayjs.extend(localizedFormat);
 
-  const defaultValues = {
-    transactionId: 0,
-    categoryId: 0,
-    accountId: accountId,
-    date: new Date(),
-    notes: '',
-    inflow: 0,
-    outflow: 0,
-    cleared: false,
-  };
-
-  const formSchema = z.object({
-    transactionId: z.number(),
-    categoryId: z.number(),
-    accountId: z.number(),
-    date: z.coerce.date({
-      required_error: 'A transaction date is required.',
-    }),
-    notes: z.string(),
-    inflow: z.coerce
-      .number({
-        required_error: 'An inflow amount is required.',
-      })
-      .nonnegative(),
-    outflow: z.coerce
-      .number({
-        required_error: 'An outflow amount is required.',
-      })
-      .nonnegative(),
-    cleared: z.boolean(),
-  }) satisfies z.ZodType<Transaction>;
+  const { data } = useGetTransaction(transactionId);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: data != null ? data : defaultValues,
+    defaultValues: {
+      transactionId: 0,
+      categoryId: 0,
+      accountId: accountId,
+      date: new Date(),
+      notes: '',
+      inflow: 0,
+      outflow: 0,
+      cleared: false,
+    },
+    values: data,
   });
 
   const onSubmit = (values: Transaction) => {
@@ -100,10 +79,7 @@ export function TransactionForm({
 
   return (
     <Form {...form}>
-      <form
-        className="mt-2 space-y-8"
-        onSubmit={form.handleSubmit((values) => onSubmit(values))}
-      >
+      <form className="mt-2 space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="date"

@@ -26,15 +26,17 @@ async function deleteTransaction(id: number) {
   }
 }
 
-async function getTransactionById(id?: number): Promise<Transaction | null> {
+async function getTransactionById(
+  id?: number
+): Promise<Transaction | undefined> {
   if (!id) {
-    return null;
+    return undefined;
   }
 
   return (await fetch(`${base_api}/${id}`)
     .then((res) => res.json())
     .catch((err) => {
-      throw err;
+      console.log(err);
     })) as Transaction;
 }
 

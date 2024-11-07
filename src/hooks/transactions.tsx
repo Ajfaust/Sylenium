@@ -59,7 +59,7 @@ function useDeleteTransaction() {
 }
 
 function useGetTransaction(id?: number) {
-  return useQuery<Transaction | null, Error>({
+  return useQuery<Transaction | undefined, Error>({
     queryKey: ['transaction', id],
     queryFn: async () => await getTransactionById(id),
   });
@@ -71,7 +71,7 @@ function useUpdateTransaction() {
   return useMutation<void, Error, Partial<Transaction>>({
     mutationFn: (transaction) => updateTransaction(transaction),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['account'] });
       toast({
         variant: 'default',
         description: (
