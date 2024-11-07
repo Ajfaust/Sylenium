@@ -2,22 +2,22 @@ import { TransactionForm } from '@/components/transactions/transaction-form';
 import { DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export function NewEditTransactionDialog({
-  type,
-  id,
+  transactionId,
+  accountId,
   afterSave,
 }: {
-  type: string;
-  id?: number;
+  transactionId?: number;
+  accountId: number;
   afterSave: () => void;
 }) {
   return (
     <>
       <DialogHeader>
         <DialogTitle>
-          {type === 'new' ? 'New Transaction' : 'Edit Transaction'}
+          {transactionId ? 'Edit Transaction' : 'New Transaction'}
         </DialogTitle>
       </DialogHeader>
-      <TransactionForm id={id} afterSave={afterSave} />
+      <TransactionForm transactionId={transactionId} accountId={accountId} afterSave={afterSave} />
     </>
   );
 }

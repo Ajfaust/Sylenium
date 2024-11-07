@@ -1,8 +1,14 @@
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useState } from 'react';
 import { FaEllipsis } from 'react-icons/fa6';
 
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from '../ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +31,9 @@ export function CategoryDropdownMenu({ id }: { id: number }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <VisuallyHidden.Root>
+        <DialogDescription>Transaction Dropdown Dialogue</DialogDescription>
+      </VisuallyHidden.Root>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="size-8 p-0">

@@ -24,6 +24,10 @@ export const columns: ColumnDef<Transaction>[] = [
     accessorKey: 'transactionId',
   },
   {
+    // Hidden row so we can access account ID
+    accessorKey: 'accountId',
+  },
+  {
     accessorKey: 'date',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date" />
@@ -91,7 +95,10 @@ export const columns: ColumnDef<Transaction>[] = [
     accessorKey: 'actions',
     header: '',
     cell: ({ row }) => (
-      <TransactionDropdownMenu id={row.getValue('transactionId')} />
+      <TransactionDropdownMenu
+        transactionId={row.getValue('transactionId')}
+        accountId={row.getValue('accountId')}
+      />
     ),
   },
 ];

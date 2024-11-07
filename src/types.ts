@@ -16,7 +16,7 @@ export interface Transaction {
   categoryId: number;
   accountId: number;
   date: Date;
-  notes?: string;
+  notes: string;
   inflow: number;
   outflow: number;
   cleared: boolean;
@@ -33,4 +33,10 @@ export interface Account {
   accountId: number;
   name: string;
   balance: number;
+  transactions?: Transaction[];
+}
+
+export enum ToastResult {
+  Success,
+  Error,
 }

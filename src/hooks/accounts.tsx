@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
 
 import { toast } from '@/components/ui/use-toast';
-import { Account } from '@/types';
-import { createAccount, getAllAccounts } from '@/utils/accounts-helper';
+import { Account, Transaction } from '@/types';
+import { createAccount, getAccountTransactions, getAllAccounts } from '@/utils/accounts-helper';
 
 function useGetAccounts() {
   return useQuery<void, Error, Account[]>({
@@ -45,4 +45,11 @@ function useCreateAccount() {
   });
 }
 
-export { useCreateAccount, useGetAccounts };
+function useGetTransactionsByAccountId(accountId: string) {
+  return useQuery<Transaction[], Error>({
+    queryKey: ['accountTransactions', accountId],
+    queryFn: () => getAccountTransactions(accountId),
+  });
+}
+
+export { useCreateAccount, useGetAccounts, useGetTransactionsByAccountId };

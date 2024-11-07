@@ -1,8 +1,14 @@
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { useState } from 'react';
 import { FaEllipsis } from 'react-icons/fa6';
 
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from '../ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,12 +25,21 @@ enum Dialogs {
   Delete = 'deleteDialog',
 }
 
-export function TransactionDropdownMenu({ id }: { id: number }) {
+export function TransactionDropdownMenu({
+  transactionId,
+  accountId,
+}: {
+  transactionId: number;
+  accountId: number;
+}) {
   const [dialog, setDialog] = useState<string>();
   const [open, setOpen] = useState<boolean>(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <VisuallyHidden.Root>
+        <DialogDescription>Description</DialogDescription>
+      </VisuallyHidden.Root>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="size-8 p-0">
@@ -45,12 +60,15 @@ export function TransactionDropdownMenu({ id }: { id: number }) {
       </DropdownMenu>
       <DialogContent className="sm:max-w-md">
         {dialog === Dialogs.Delete && (
-          <DeleteTransactionDialog id={id} onClose={() => setOpen(false)} />
+          <DeleteTransactionDialog
+            id={transactionId}
+            onClose={() => setOpen(false)}
+          />
         )}
         {dialog === Dialogs.Edit && (
           <NewEditTransactionDialog
-            type="edit"
-            id={id}
+            transactionId={transactionId}
+            accountId={accountId}
             afterSave={() => setOpen(false)}
           />
         )}

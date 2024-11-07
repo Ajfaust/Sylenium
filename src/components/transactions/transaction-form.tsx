@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { Loader2 } from 'lucide-react';
@@ -34,10 +35,12 @@ import { cn } from '@/lib/utils';
 import { Transaction } from '@/types';
 
 export function TransactionForm({
-  id,
+  transactionId,
+  accountId,
   afterSave,
 }: {
-  id?: number;
+  transactionId?: number;
+  accountId: number;
   afterSave: () => void;
 }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -47,19 +50,32 @@ export function TransactionForm({
   const { mutateAsync: updateAsync, isPending: updatePending } =
     useUpdateTransaction();
 
+  const { data } = useGetTransaction(transactionId);
+
   dayjs.extend(localizedFormat);
+
+  const defaultValues = {
+    transactionId: 0,
+    categoryId: 0,
+    accountId: accountId,
+    date: new Date(),
+    notes: '',
+    inflow: 0,
+    outflow: 0,
+    cleared: false,
+  };
 
   const formSchema = z.object({
     transactionId: z.number(),
     categoryId: z.number(),
     accountId: z.number(),
-    date: z.date({
+    date: z.coerce.date({
       required_error: 'A transaction date is required.',
     }),
     notes: z.string(),
     inflow: z.coerce
       .number({
-        required_error: 'An infow amount is required.',
+        required_error: 'An inflow amount is required.',
       })
       .nonnegative(),
     outflow: z.coerce
@@ -70,27 +86,15 @@ export function TransactionForm({
     cleared: z.boolean(),
   }) satisfies z.ZodType<Transaction>;
 
-  const { data } = useGetTransaction(id ?? -1);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: {
-      transactionId: data?.transactionId || 0,
-      categoryId: data?.categoryId || 0,
-      accountId: 0,
-      date: data ? new Date(data.date) : new Date(),
-      notes: data?.notes || '',
-      inflow: data?.inflow || 0,
-      outflow: data?.outflow || 0,
-      cleared: data?.cleared || false,
-    },
+    values: data != null ? data : defaultValues,
   });
 
   const onSubmit = (values: Transaction) => {
-    if (id) {
+    if (transactionId) {
       return updateAsync(values).then(afterSave);
     }
-
     return createAsync(values).then(afterSave);
   };
 
@@ -117,13 +121,7 @@ export function TransactionForm({
                       )}
                     >
                       <FaRegCalendar className="size-4 opacity-50" />
-                      <div className="ml-4">
-                        {field.value ? (
-                          dayjs(field.value).format('L')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </div>
+                      <div className="ml-4">{format(field.value, 'P')}</div>
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -137,7 +135,6 @@ export function TransactionForm({
                       disabled={(date) =>
                         date > new Date() || date < new Date('1900-01-01')
                       }
-                      initialFocus
                     />
                   </PopoverContent>
                 </Popover>
@@ -239,7 +236,7 @@ export function TransactionForm({
           <Button type="submit" disabled={createPending || updatePending}>
             {createPending || updatePending ? (
               <Loader2 className="animate-spin" />
-            ) : id ? (
+            ) : transactionId ? (
               'Update'
             ) : (
               'Add'

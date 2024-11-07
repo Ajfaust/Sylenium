@@ -7,7 +7,6 @@ import {
   createTransaction,
   deleteTransaction,
   getTransactionById,
-  getTransactionsByAccount,
   updateTransaction,
 } from '@/utils/transactions-helper';
 
@@ -19,7 +18,7 @@ function useCreateTransaction() {
     mutationFn: (values) => createTransaction(values),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['accountTransactions'],
+        queryKey: ['account'],
       });
     },
     onError: (error) => {
@@ -45,7 +44,7 @@ function useDeleteTransaction() {
     mutationKey: ['deleteTransaction'],
     mutationFn: (id) => deleteTransaction(id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      await queryClient.invalidateQueries({ queryKey: ['account'] });
       toast({
         variant: 'default',
         description: (
@@ -59,17 +58,10 @@ function useDeleteTransaction() {
   });
 }
 
-function useGetTransaction(id: number) {
-  return useQuery<Transaction, Error>({
+function useGetTransaction(id?: number) {
+  return useQuery<Transaction | null, Error>({
     queryKey: ['transaction', id],
-    queryFn: () => getTransactionById(id),
-  });
-}
-
-function useGetTransactionsByAccount(accountId: string) {
-  return useQuery<Transaction[], Error>({
-    queryKey: ['accountTransactions', accountId],
-    queryFn: () => getTransactionsByAccount(accountId),
+    queryFn: async () => await getTransactionById(id),
   });
 }
 
@@ -109,6 +101,5 @@ export {
   useCreateTransaction,
   useDeleteTransaction,
   useGetTransaction,
-  useGetTransactionsByAccount,
   useUpdateTransaction,
 };

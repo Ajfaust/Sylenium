@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { Account } from '@/types';
+import { Account, Transaction } from '@/types';
 
 const api = '/api/accounts';
 
@@ -36,6 +36,16 @@ async function createAccount(account: Partial<Account>) {
   }
 }
 
+async function getAccountTransactions(
+  accountId: string
+): Promise<Transaction[]> {
+  return (await fetch(`${api}/${accountId}`)
+    .then((res) => res.json())
+    .catch((err) => {
+      throw err;
+    })) as Transaction[];
+}
+
 function accountQueryOptions(accountId: string) {
   return queryOptions<Account, Error>({
     queryKey: ['account', accountId, api],
@@ -53,5 +63,6 @@ export {
   allAccountsQueryOptions,
   createAccount,
   getAccountById,
-  getAllAccounts,
+  getAccountTransactions,
+  getAllAccounts
 };
