@@ -29,7 +29,7 @@ export function DeleteCategoryDialog({
       <DialogFooter className="sm:justify-end">
         <Button
           type="button"
-          variant="destructiveOutline"
+          variant="destructive"
           onClick={() => mutateAsync(id).then(onClose)}
         >
           Yes
