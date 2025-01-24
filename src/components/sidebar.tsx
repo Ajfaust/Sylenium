@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   Button,
   Disclosure,
@@ -7,7 +7,13 @@ import {
   Link,
 } from 'react-aria-components';
 import { IconType } from 'react-icons';
-import { PiBank, PiCaretDoubleRight, PiGear, PiTag } from 'react-icons/pi';
+import {
+  PiBank,
+  PiCaretDoubleRight,
+  PiCaretDown,
+  PiGear,
+  PiTag,
+} from 'react-icons/pi';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -77,32 +83,80 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           <PiCaretDoubleRight size={20} strokeWidth={1.5} />
         </button>
       </div>
-      <div className="mt-6 px-5">
-        {navItems.map((item) => (
-          <Disclosure key={item.title}>
-            <Heading>
-              <Button
-                slot="trigger"
-                className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full"
-              >
-                <item.icon size={25} strokeWidth={1.5} />
-                <span
-                  className={`ml-4 text-lg text-start whitespace-nowrap overflow-hidden transition-all duration-300 ${isOpen ? 'w-32 opacity-100' : 'w-0 opacity-0'}`}
-                >
-                  {item.title}
-                </span>
-              </Button>
-            </Heading>
-            <DisclosurePanel>
-              {item.subitems?.map((si) => (
-                <Link href="/accounts/$account_id" key={si.title}>
-                  {si.title}
-                </Link>
-              ))}
-            </DisclosurePanel>
-          </Disclosure>
-        ))}
+      <div className="mt-6 px-2">
+        {navItems.map((item) =>
+          item.hasSubitems ? (
+            <MenuDisclosure key={item.title} item={item} isOpen={isOpen} />
+          ) : (
+            <Link
+              key={item.title}
+              className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full react-aria-Button cursor-pointer"
+            >
+              <MenuButtonContent key={item.title} item={item} isOpen={isOpen} />
+            </Link>
+          )
+        )}
       </div>
     </div>
+  );
+};
+
+interface MenuItemProps {
+  item: NavItem;
+  isOpen: boolean;
+}
+
+const MenuButtonContent = ({ item, isOpen }: MenuItemProps) => {
+  return (
+    <>
+      <item.icon
+        size={25}
+        strokeWidth={1.5}
+        className={`${!isOpen ? 'grow' : ''}`}
+      />
+      <span
+        className={`ml-4 text-lg text-start whitespace-nowrap overflow-hidden transition-all duration-300 ${isOpen ? 'w-32 opacity-100' : 'w-0 opacity-0'}`}
+      >
+        {item.title}
+      </span>
+    </>
+  );
+};
+
+const MenuDisclosure = ({ item, isOpen }: MenuItemProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <Disclosure
+      key={item.title}
+      isExpanded={isExpanded}
+      onExpandedChange={setIsExpanded}
+      className="transition-all ease-in-out duration-300"
+    >
+      <Heading>
+        <Button
+          slot="trigger"
+          className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full cursor-pointer"
+        >
+          <MenuButtonContent item={item} isOpen={isOpen} />
+          <div
+            className={`${isExpanded ? 'rotate-180' : ''} transition-transform duration-300`}
+          >
+            <PiCaretDown size={18} strokeWidth={1.5} />
+          </div>
+        </Button>
+      </Heading>
+      <DisclosurePanel>
+        {item.subitems?.map((si) => (
+          <Link
+            href=".."
+            key={si.title}
+            className="flex items-center p-2 hover:bg-slate-500 rounded-lg cursor-pointer mx-5 text-md"
+          >
+            {si.title}
+          </Link>
+        ))}
+      </DisclosurePanel>
+    </Disclosure>
   );
 };
