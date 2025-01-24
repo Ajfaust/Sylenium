@@ -1,12 +1,12 @@
+import { resolve } from 'path';
+import tailwindcss from '@tailwindcss/vite';
 import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
-import tailwindcss from 'tailwindcss';
 import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), TanStackRouterVite()],
+  plugins: [react(), TanStackRouterVite(), tailwindcss()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -17,15 +17,10 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://192.168.39.190:7207',
+        target: 'localhost:8080',
         changeOrigin: true,
         secure: false,
       },
-    },
-  },
-  css: {
-    postcss: {
-      plugins: [tailwindcss],
     },
   },
 });
