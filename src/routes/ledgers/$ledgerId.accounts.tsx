@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { allAccountsForLedgerQueryOptions } from '../utils/accounts-helper.tsx';
+import { allAccountsForLedgerQueryOptions } from '../../utils/accounts.tsx';
 
 export const Route = createFileRoute('/ledgers/$ledgerId/accounts')({
   loader: async ({ params: { ledgerId }, context }) => {

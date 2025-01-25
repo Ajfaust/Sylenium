@@ -22,7 +22,7 @@ export const Route = createRootRouteWithContext<{
 
 declare module 'react-aria-components' {
   interface RouterConfig {
-    href: ToOptions['to'];
+    href: ToOptions;
     routerOptions: Omit<NavigateOptions, keyof ToOptions>;
   }
 }
@@ -34,8 +34,8 @@ function RootRoute() {
   return (
     <>
       <RouterProvider
-        navigate={(to, options) => router.navigate({ to, ...options })}
-        useHref={(to) => router.buildLocation({ to }).href}
+        navigate={(path, options) => router.navigate({ ...path, ...options })}
+        useHref={({ to }) => router.buildLocation({ to }).href}
       >
         <QueryClientProvider client={queryClient}>
           <main className="h-screen flex bg-slate-800 px-3 py-4">

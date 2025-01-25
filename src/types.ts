@@ -9,3 +9,8 @@ export interface FinancialCategory {
   name: string;
   type: number;
 }
+
+export interface Ledger {
+  id: number;
+  name: string;
+}

@@ -121,7 +121,8 @@
       "**/scripts",
       "src/graphql/generated/*",
       "**/*.config",
-      "**/*.config.ts"
+      "**/*.config.ts",
+      "**/routeTree.gen.ts"
     ]
   },
   "javascript": {
