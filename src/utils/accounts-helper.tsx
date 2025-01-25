@@ -2,7 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { Account } from '../types';
 
-const api = '/api/accounts';
+const api = '/api/financial-accounts';
 
 async function getAccountById(accountId: string) {
   const result = await fetch(`${api}/${accountId}`);
@@ -13,8 +13,8 @@ async function getAccountById(accountId: string) {
   return result.json();
 }
 
-async function getAllAccounts() {
-  const result = await fetch(api);
+async function getAllAccountsForLedger(id: string) {
+  const result = await fetch(`/api/ledgers/${id}/accounts`);
   if (!result.ok) {
     throw new Error('Something went wrong');
   }
@@ -43,15 +43,17 @@ function accountQueryOptions(accountId: string) {
   });
 }
 
-const allAccountsQueryOptions = queryOptions<Account[], Error>({
-  queryKey: ['accounts', api],
-  queryFn: getAllAccounts,
-});
+function allAccountsForLedgerQueryOptions(ledgerId: string) {
+  return queryOptions<{ accounts: Account[] }, Error>({
+    queryKey: ['accounts', ledgerId, api],
+    queryFn: () => getAllAccountsForLedger(ledgerId),
+  });
+}
 
 export {
   accountQueryOptions,
-  allAccountsQueryOptions,
+  allAccountsForLedgerQueryOptions,
   createAccount,
   getAccountById,
-  getAllAccounts,
+  getAllAccountsForLedger,
 };

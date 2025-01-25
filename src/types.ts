@@ -1,18 +1,11 @@
-import { IconType } from 'react-icons';
-
-export interface SidebarItems {
-  items: Array<SidebarItem>;
-}
-
-export interface SidebarItem {
-  label: string;
-  href: string;
-  icon?: IconType;
-  children?: Array<SidebarItem>;
-}
-
 export interface Account {
-  accountId: number;
+  id: number;
+  financialCategory: FinancialCategory;
   name: string;
-  balance: number;
+}
+
+export interface FinancialCategory {
+  id: number;
+  name: string;
+  type: number;
 }

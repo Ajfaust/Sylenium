@@ -1,19 +1,7 @@
-import { Dispatch, SetStateAction, useState } from 'react';
-import {
-  Button,
-  Disclosure,
-  DisclosurePanel,
-  Heading,
-  Link,
-} from 'react-aria-components';
+import { Dispatch, SetStateAction } from 'react';
+import { Link } from 'react-aria-components';
 import { IconType } from 'react-icons';
-import {
-  PiBank,
-  PiCaretDoubleRight,
-  PiCaretDown,
-  PiGear,
-  PiTag,
-} from 'react-icons/pi';
+import { PiBank, PiCaretDoubleRight, PiGear, PiTag } from 'react-icons/pi';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -23,13 +11,6 @@ interface SidebarProps {
 interface NavItem {
   title: string;
   icon: IconType;
-  hasSubitems: boolean;
-  subitems?: NavSubItem[];
-  url: string;
-}
-
-interface NavSubItem {
-  title: string;
   url: string;
 }
 
@@ -38,29 +19,16 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     {
       title: 'Accounts',
       icon: PiBank,
-      hasSubitems: true,
-      subitems: [
-        {
-          title: 'Checking',
-          url: '/accounts/checking',
-        },
-        {
-          title: 'Savings',
-          url: '/accounts/savings',
-        },
-      ],
       url: '',
     },
     {
       title: 'Categories',
       icon: PiTag,
-      hasSubitems: false,
       url: '/categories',
     },
     {
       title: 'Settings',
       icon: PiGear,
-      hasSubitems: false,
       url: '/settings',
     },
   ];
@@ -74,7 +42,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           className={`font-bold overflow-hidden transition-all duration-300 text-lg text-nowrap text-indigo-500 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
           aria-label="Sidebar Logo"
         >
-          Dashboard
+          Sylenium
         </h1>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -84,31 +52,22 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         </button>
       </div>
       <div className="mt-6 px-2">
-        {navItems.map((item) =>
-          item.hasSubitems ? (
-            <MenuDisclosure key={item.title} item={item} isOpen={isOpen} />
-          ) : (
-            <Link
-              key={item.title}
-              className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full react-aria-Button cursor-pointer"
-            >
-              <MenuButtonContent key={item.title} item={item} isOpen={isOpen} />
-            </Link>
-          )
-        )}
+        {navItems.map((item) => (
+          <SidebarButton key={item.title} item={item} isOpen={isOpen} />
+        ))}
       </div>
     </div>
   );
 };
 
-interface MenuItemProps {
+interface SidebarButtonProps {
   item: NavItem;
   isOpen: boolean;
 }
 
-const MenuButtonContent = ({ item, isOpen }: MenuItemProps) => {
+const SidebarButton = ({ item, isOpen }: SidebarButtonProps) => {
   return (
-    <>
+    <Link className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full react-aria-Button cursor-pointer">
       <item.icon
         size={25}
         strokeWidth={1.5}
@@ -119,44 +78,6 @@ const MenuButtonContent = ({ item, isOpen }: MenuItemProps) => {
       >
         {item.title}
       </span>
-    </>
-  );
-};
-
-const MenuDisclosure = ({ item, isOpen }: MenuItemProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <Disclosure
-      key={item.title}
-      isExpanded={isExpanded}
-      onExpandedChange={setIsExpanded}
-      className="transition-all ease-in-out duration-300"
-    >
-      <Heading>
-        <Button
-          slot="trigger"
-          className="flex items-center p-2 hover:bg-slate-500 rounded-lg w-full cursor-pointer"
-        >
-          <MenuButtonContent item={item} isOpen={isOpen} />
-          <div
-            className={`${isExpanded ? 'rotate-180' : ''} transition-transform duration-300`}
-          >
-            <PiCaretDown size={18} strokeWidth={1.5} />
-          </div>
-        </Button>
-      </Heading>
-      <DisclosurePanel>
-        {item.subitems?.map((si) => (
-          <Link
-            href=".."
-            key={si.title}
-            className="flex items-center p-2 hover:bg-slate-500 rounded-lg cursor-pointer mx-5 text-md"
-          >
-            {si.title}
-          </Link>
-        ))}
-      </DisclosurePanel>
-    </Disclosure>
+    </Link>
   );
 };

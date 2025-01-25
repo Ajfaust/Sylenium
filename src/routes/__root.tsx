@@ -1,8 +1,10 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   type NavigateOptions,
   Outlet,
   type ToOptions,
-  createRootRoute,
+  createRootRouteWithContext,
   useRouter,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
@@ -10,7 +12,11 @@ import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { Sidebar } from '../components/Sidebar.tsx';
 
-export const Route = createRootRoute({
+const queryClient = new QueryClient();
+
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   component: RootRoute,
 });
 
@@ -31,13 +37,16 @@ function RootRoute() {
         navigate={(to, options) => router.navigate({ to, ...options })}
         useHref={(to) => router.buildLocation({ to }).href}
       >
-        <main className="h-screen flex bg-slate-800 px-3 py-4">
-          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-          <div className="flex-1 transition-all duration-300 bg-slate-500 px-3 h-full overflow-hidden">
-            <Outlet />
-          </div>
-        </main>
-        <TanStackRouterDevtools />
+        <QueryClientProvider client={queryClient}>
+          <main className="h-screen flex bg-slate-800 px-3 py-4">
+            <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+            <div className="flex-1 transition-all duration-300 bg-slate-500 px-3 h-full overflow-hidden">
+              <Outlet />
+            </div>
+          </main>
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </RouterProvider>
     </>
   );
