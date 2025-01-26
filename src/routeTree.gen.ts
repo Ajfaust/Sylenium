@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LedgersIndexImport } from './routes/ledgers/index'
+import { Route as AccountsAccountIdImport } from './routes/accounts/$accountId'
 import { Route as LedgersLedgerIdAccountsImport } from './routes/ledgers/$ledgerId.accounts'
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as LedgersLedgerIdAccountsImport } from './routes/ledgers/$ledger
 const LedgersIndexRoute = LedgersIndexImport.update({
   id: '/ledgers/',
   path: '/ledgers/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AccountsAccountIdRoute = AccountsAccountIdImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -32,6 +39,13 @@ const LedgersLedgerIdAccountsRoute = LedgersLedgerIdAccountsImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/accounts/$accountId': {
+      id: '/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof AccountsAccountIdImport
+      parentRoute: typeof rootRoute
+    }
     '/ledgers/': {
       id: '/ledgers/'
       path: '/ledgers'
@@ -52,36 +66,45 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/ledgers': typeof LedgersIndexRoute
   '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRoutesByTo {
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/ledgers': typeof LedgersIndexRoute
   '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
+  '/accounts/$accountId': typeof AccountsAccountIdRoute
   '/ledgers/': typeof LedgersIndexRoute
   '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/ledgers' | '/ledgers/$ledgerId/accounts'
+  fullPaths: '/accounts/$accountId' | '/ledgers' | '/ledgers/$ledgerId/accounts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/ledgers' | '/ledgers/$ledgerId/accounts'
-  id: '__root__' | '/ledgers/' | '/ledgers/$ledgerId/accounts'
+  to: '/accounts/$accountId' | '/ledgers' | '/ledgers/$ledgerId/accounts'
+  id:
+    | '__root__'
+    | '/accounts/$accountId'
+    | '/ledgers/'
+    | '/ledgers/$ledgerId/accounts'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
+  AccountsAccountIdRoute: typeof AccountsAccountIdRoute
   LedgersIndexRoute: typeof LedgersIndexRoute
   LedgersLedgerIdAccountsRoute: typeof LedgersLedgerIdAccountsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  AccountsAccountIdRoute: AccountsAccountIdRoute,
   LedgersIndexRoute: LedgersIndexRoute,
   LedgersLedgerIdAccountsRoute: LedgersLedgerIdAccountsRoute,
 }
@@ -96,9 +119,13 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/accounts/$accountId",
         "/ledgers/",
         "/ledgers/$ledgerId/accounts"
       ]
+    },
+    "/accounts/$accountId": {
+      "filePath": "accounts/$accountId.tsx"
     },
     "/ledgers/": {
       "filePath": "ledgers/index.tsx"
