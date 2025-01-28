@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   type NavigateOptions,
@@ -11,8 +11,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { useState } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { Sidebar } from '../components/Sidebar.tsx';
-
-const queryClient = new QueryClient();
+import { useSidebarState } from '../hooks/use-sidebar-state.tsx';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -30,6 +29,11 @@ declare module 'react-aria-components' {
 function RootRoute() {
   let router = useRouter();
   const [isOpen, setIsOpen] = useState(true); // State to track sidebar open/close
+  const { sidebarVisible, setSidebarState } = useSidebarState(
+    Route.useRouteContext().queryClient
+  );
+
+  setSidebarState(false);
 
   return (
     <>
@@ -37,16 +41,14 @@ function RootRoute() {
         navigate={(path, options) => router.navigate({ ...path, ...options })}
         useHref={({ to }) => router.buildLocation({ to }).href}
       >
-        <QueryClientProvider client={queryClient}>
-          <main className="h-screen flex bg-slate-800 px-3 py-4">
-            <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
-            <div className="flex-1 transition-all duration-300 bg-slate-500 px-3 h-full overflow-hidden">
-              <Outlet />
-            </div>
-          </main>
-          <TanStackRouterDevtools />
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <main className="h-screen flex bg-slate-800 px-3 py-4">
+          {sidebarVisible && <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />}
+          <div className="flex-1 transition-all duration-300 bg-slate-500 px-3 h-full overflow-hidden">
+            <Outlet />
+          </div>
+        </main>
+        <TanStackRouterDevtools />
+        <ReactQueryDevtools initialIsOpen={false} />
       </RouterProvider>
     </>
   );

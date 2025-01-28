@@ -1,22 +1,27 @@
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
-import { Link } from 'react-aria-components'
-import { PiSignIn } from 'react-icons/pi'
-import { getLedgersQueryOptions } from '../../utils/ledgers.tsx'
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { createFileRoute } from '@tanstack/react-router';
+import { Link } from 'react-aria-components';
+import { PiSignIn } from 'react-icons/pi';
+import { useSidebarState } from '../../hooks/use-sidebar-state.tsx';
+import { getLedgersQueryOptions } from '../../utils/ledgers.tsx';
 
 export const Route = createFileRoute('/ledgers/')({
   loader: async ({ context }) => {
     const ledgers = await context.queryClient.ensureQueryData(
-      getLedgersQueryOptions(),
-    )
+      getLedgersQueryOptions()
+    );
 
-    return { ledgers: ledgers }
+    return { ledgers: ledgers };
   },
   component: LedgersComponent,
-})
+});
 
 function LedgersComponent() {
-  const { data } = useSuspenseQuery(getLedgersQueryOptions())
+  const { data } = useSuspenseQuery(getLedgersQueryOptions());
+  const { setSidebarState } = useSidebarState(
+    Route.useRouteContext().queryClient
+  );
+  setSidebarState(false);
 
   return (
     <div className="flex flex-col">
@@ -41,5 +46,5 @@ function LedgersComponent() {
         </div>
       </div>
     </div>
-  )
+  );
 }

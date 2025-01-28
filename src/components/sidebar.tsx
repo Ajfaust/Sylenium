@@ -19,7 +19,7 @@ interface SidebarProps {
 
 interface NavSubItem {
   title: string;
-  url: string;
+  id: number;
 }
 
 interface NavItem {
@@ -36,7 +36,16 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       title: 'Accounts',
       icon: PiBank,
       hasSubitems: true,
-      subitems: [],
+      subitems: [
+        {
+          title: 'Checking',
+          id: 2,
+        },
+        {
+          title: 'Savings',
+          id: 3,
+        },
+      ],
       url: '',
     },
     {
@@ -80,17 +89,23 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           item.hasSubitems ? (
             <Disclosure key={item.title}>
               <Heading>
-                <Button slot="trigger">{item.title}</Button>
+                <Button
+                  slot="trigger"
+                  className="flex items-center w-full cursor-pointer hover:bg-indigo-600 rounded-lg p-2"
+                >
+                  <item.icon size={25} strokeWidth={1.5} />
+                  <span className="mx-5 text-lg">{item.title}</span>
+                </Button>
               </Heading>
-              <DisclosurePanel>
+              <DisclosurePanel className="flex flex-col p-2 border-l-1 ml-2">
                 {item.subitems.map((si) => (
                   <Link
                     key={si.title}
                     href={{
                       to: '/accounts/$accountId',
-                      params: { accountId: si.title },
+                      params: { accountId: si.id.toString() },
                     }}
-                    className="react-aria-Button rounded-md bg-indigo-400"
+                    className="react-aria-Button rounded-md hover:bg-indigo-400 p-2 w-full"
                   >
                     {si.title}
                   </Link>
@@ -101,7 +116,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             <Link
               key={item.title}
               href={{ to: '/ledgers' }}
-              className="react-aria-Button"
+              className="flex react-aria-Button items-center p-2 my-2 hover:bg-indigo-600 rounded-lg cursor-pointer"
             >
               <SidebarButtonContent item={item} isOpen={isOpen} />
             </Link>
