@@ -12,6 +12,22 @@ async function getLedgers() {
   return result.json();
 }
 
+async function getLedgerById(id: string) {
+  const result = await fetch(`${api}/${id}`);
+  if (!result.ok) {
+    throw new Error(`Error retrieving ledger with id: ${id}`);
+  }
+
+  return result.json();
+}
+
+function getLedgerByIdQueryOptions(id: string) {
+  return queryOptions<Ledger, Error>({
+    queryKey: ['ledgers', id, api],
+    queryFn: () => getLedgerById(id),
+  });
+}
+
 function getLedgersQueryOptions() {
   return queryOptions<Ledger[], Error>({
     queryKey: ['ledgers', api],
@@ -19,4 +35,9 @@ function getLedgersQueryOptions() {
   });
 }
 
-export { getLedgers, getLedgersQueryOptions };
+export {
+  getLedgers,
+  getLedgerById,
+  getLedgersQueryOptions,
+  getLedgerByIdQueryOptions,
+};

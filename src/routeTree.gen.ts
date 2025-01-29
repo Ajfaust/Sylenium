@@ -12,8 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LedgersIndexImport } from './routes/ledgers/index'
+import { Route as LedgersLedgerIdImport } from './routes/ledgers/$ledgerId'
 import { Route as AccountsAccountIdImport } from './routes/accounts/$accountId'
-import { Route as LedgersLedgerIdAccountsImport } from './routes/ledgers/$ledgerId.accounts'
 
 // Create/Update Routes
 
@@ -23,15 +23,15 @@ const LedgersIndexRoute = LedgersIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AccountsAccountIdRoute = AccountsAccountIdImport.update({
-  id: '/accounts/$accountId',
-  path: '/accounts/$accountId',
+const LedgersLedgerIdRoute = LedgersLedgerIdImport.update({
+  id: '/ledgers/$ledgerId',
+  path: '/ledgers/$ledgerId',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LedgersLedgerIdAccountsRoute = LedgersLedgerIdAccountsImport.update({
-  id: '/ledgers/$ledgerId/accounts',
-  path: '/ledgers/$ledgerId/accounts',
+const AccountsAccountIdRoute = AccountsAccountIdImport.update({
+  id: '/accounts/$accountId',
+  path: '/accounts/$accountId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,18 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountsAccountIdImport
       parentRoute: typeof rootRoute
     }
+    '/ledgers/$ledgerId': {
+      id: '/ledgers/$ledgerId'
+      path: '/ledgers/$ledgerId'
+      fullPath: '/ledgers/$ledgerId'
+      preLoaderRoute: typeof LedgersLedgerIdImport
+      parentRoute: typeof rootRoute
+    }
     '/ledgers/': {
       id: '/ledgers/'
       path: '/ledgers'
       fullPath: '/ledgers'
       preLoaderRoute: typeof LedgersIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/ledgers/$ledgerId/accounts': {
-      id: '/ledgers/$ledgerId/accounts'
-      path: '/ledgers/$ledgerId/accounts'
-      fullPath: '/ledgers/$ledgerId/accounts'
-      preLoaderRoute: typeof LedgersLedgerIdAccountsImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,46 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/accounts/$accountId': typeof AccountsAccountIdRoute
+  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
   '/ledgers': typeof LedgersIndexRoute
-  '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRoutesByTo {
   '/accounts/$accountId': typeof AccountsAccountIdRoute
+  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
   '/ledgers': typeof LedgersIndexRoute
-  '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/accounts/$accountId': typeof AccountsAccountIdRoute
+  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
   '/ledgers/': typeof LedgersIndexRoute
-  '/ledgers/$ledgerId/accounts': typeof LedgersLedgerIdAccountsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/accounts/$accountId' | '/ledgers' | '/ledgers/$ledgerId/accounts'
+  fullPaths: '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/accounts/$accountId' | '/ledgers' | '/ledgers/$ledgerId/accounts'
-  id:
-    | '__root__'
-    | '/accounts/$accountId'
-    | '/ledgers/'
-    | '/ledgers/$ledgerId/accounts'
+  to: '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers'
+  id: '__root__' | '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   AccountsAccountIdRoute: typeof AccountsAccountIdRoute
+  LedgersLedgerIdRoute: typeof LedgersLedgerIdRoute
   LedgersIndexRoute: typeof LedgersIndexRoute
-  LedgersLedgerIdAccountsRoute: typeof LedgersLedgerIdAccountsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AccountsAccountIdRoute: AccountsAccountIdRoute,
+  LedgersLedgerIdRoute: LedgersLedgerIdRoute,
   LedgersIndexRoute: LedgersIndexRoute,
-  LedgersLedgerIdAccountsRoute: LedgersLedgerIdAccountsRoute,
 }
 
 export const routeTree = rootRoute
@@ -120,18 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/accounts/$accountId",
-        "/ledgers/",
-        "/ledgers/$ledgerId/accounts"
+        "/ledgers/$ledgerId",
+        "/ledgers/"
       ]
     },
     "/accounts/$accountId": {
       "filePath": "accounts/$accountId.tsx"
     },
+    "/ledgers/$ledgerId": {
+      "filePath": "ledgers/$ledgerId.tsx"
+    },
     "/ledgers/": {
       "filePath": "ledgers/index.tsx"
-    },
-    "/ledgers/$ledgerId/accounts": {
-      "filePath": "ledgers/$ledgerId.accounts.tsx"
     }
   }
 }

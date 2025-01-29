@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { Link } from 'react-aria-components';
 import { PiSignIn } from 'react-icons/pi';
-import { useSidebarState } from '../../hooks/use-sidebar-state.tsx';
+import { useLedgerState } from '../../hooks/use-ledger-state.tsx';
 import { getLedgersQueryOptions } from '../../utils/ledgers.tsx';
 
 export const Route = createFileRoute('/ledgers/')({
@@ -18,10 +18,14 @@ export const Route = createFileRoute('/ledgers/')({
 
 function LedgersComponent() {
   const { data } = useSuspenseQuery(getLedgersQueryOptions());
-  const { setSidebarState } = useSidebarState(
+
+  const { setSelectedLedgerId } = useLedgerState(
     Route.useRouteContext().queryClient
   );
-  setSidebarState(false);
+
+  const handleSelectLedger = (ledgerId: string) => {
+    setSelectedLedgerId(ledgerId);
+  };
 
   return (
     <div className="flex flex-col">
@@ -35,9 +39,11 @@ function LedgersComponent() {
               key={l.id}
               className="flex react-aria-Button text-lg bg-slate-200 justify-between m-2 rounded-md p-2 hover:bg-indigo-400"
               href={{
-                to: '/ledgers/$ledgerId/accounts',
+                from: '/ledgers',
+                to: '/ledgers/$ledgerId',
                 params: { ledgerId: l.id.toString() },
               }}
+              onPress={() => handleSelectLedger(l.id.toString())}
             >
               {l.name}
               <PiSignIn size={25} strokeWidth={2} />
