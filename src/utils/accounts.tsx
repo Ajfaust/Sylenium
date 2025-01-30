@@ -4,7 +4,7 @@ import { Account } from '../types';
 
 const api = '/api/financial-accounts';
 
-async function getAccountById(accountId: string) {
+async function getAccountById(accountId: string): Promise<Account> {
   const result = await fetch(`${api}/${accountId}`);
   if (!result.ok) {
     throw new Error('Something went wrong');
@@ -13,7 +13,7 @@ async function getAccountById(accountId: string) {
   return result.json();
 }
 
-async function getAllAccountsForLedger(id: string) {
+async function getAllAccountsForLedger(id: string): Promise<Array<Account>> {
   const result = await fetch(`/api/ledgers/${id}/accounts`);
   if (!result.ok) {
     throw new Error('Something went wrong');
@@ -44,7 +44,7 @@ function accountQueryOptions(accountId: string) {
 }
 
 function allAccountsForLedgerQueryOptions(ledgerId: string) {
-  return queryOptions<{ accounts: Account[] }, Error>({
+  return queryOptions<Array<Account>, Error>({
     queryKey: ['accounts', ledgerId, api],
     queryFn: () => getAllAccountsForLedger(ledgerId),
   });
