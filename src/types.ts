@@ -13,4 +13,5 @@ export interface FinancialCategory {
 export interface Ledger {
   id: number;
   name: string;
+  accounts: Array<Account>;
 }
