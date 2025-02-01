@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 
-import { Account } from '../types';
+import { Account } from '@/types';
 
 const api = '/api/financial-accounts';
 

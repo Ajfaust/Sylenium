@@ -14,10 +14,16 @@ export type FinancialCategory = {
 export type Ledger = {
   id: number;
   name: string;
+  isActive: boolean;
   accounts: Array<Account>;
   vendors: Array<Vendor>;
   transactionCategories: Array<TransactionCategory>;
   financialCategories: Array<FinancialCategory>;
+};
+
+export type LedgerDto = {
+  name: string;
+  isActive: boolean;
 };
 
 export type Transaction = {

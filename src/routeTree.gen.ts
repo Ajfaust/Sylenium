@@ -11,98 +11,182 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LedgersIndexImport } from './routes/ledgers/index'
-import { Route as LedgersLedgerIdImport } from './routes/ledgers/$ledgerId'
-import { Route as AccountsAccountIdImport } from './routes/accounts/$accountId'
+import { Route as LedgersImport } from './routes/ledgers'
+import { Route as LedgerImport } from './routes/_ledger'
+import { Route as LedgerVendorsImport } from './routes/_ledger/vendors'
+import { Route as LedgerDashboardImport } from './routes/_ledger/dashboard'
+import { Route as LedgerCategoriesImport } from './routes/_ledger/categories'
+import { Route as LedgerAccountsAccountIdImport } from './routes/_ledger/accounts/$accountId'
 
 // Create/Update Routes
 
-const LedgersIndexRoute = LedgersIndexImport.update({
-  id: '/ledgers/',
-  path: '/ledgers/',
+const LedgersRoute = LedgersImport.update({
+  id: '/ledgers',
+  path: '/ledgers',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LedgersLedgerIdRoute = LedgersLedgerIdImport.update({
-  id: '/ledgers/$ledgerId',
-  path: '/ledgers/$ledgerId',
+const LedgerRoute = LedgerImport.update({
+  id: '/_ledger',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AccountsAccountIdRoute = AccountsAccountIdImport.update({
+const LedgerVendorsRoute = LedgerVendorsImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => LedgerRoute,
+} as any)
+
+const LedgerDashboardRoute = LedgerDashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => LedgerRoute,
+} as any)
+
+const LedgerCategoriesRoute = LedgerCategoriesImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => LedgerRoute,
+} as any)
+
+const LedgerAccountsAccountIdRoute = LedgerAccountsAccountIdImport.update({
   id: '/accounts/$accountId',
   path: '/accounts/$accountId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => LedgerRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/accounts/$accountId': {
-      id: '/accounts/$accountId'
-      path: '/accounts/$accountId'
-      fullPath: '/accounts/$accountId'
-      preLoaderRoute: typeof AccountsAccountIdImport
+    '/_ledger': {
+      id: '/_ledger'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LedgerImport
       parentRoute: typeof rootRoute
     }
-    '/ledgers/$ledgerId': {
-      id: '/ledgers/$ledgerId'
-      path: '/ledgers/$ledgerId'
-      fullPath: '/ledgers/$ledgerId'
-      preLoaderRoute: typeof LedgersLedgerIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/ledgers/': {
-      id: '/ledgers/'
+    '/ledgers': {
+      id: '/ledgers'
       path: '/ledgers'
       fullPath: '/ledgers'
-      preLoaderRoute: typeof LedgersIndexImport
+      preLoaderRoute: typeof LedgersImport
       parentRoute: typeof rootRoute
+    }
+    '/_ledger/categories': {
+      id: '/_ledger/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof LedgerCategoriesImport
+      parentRoute: typeof LedgerImport
+    }
+    '/_ledger/dashboard': {
+      id: '/_ledger/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof LedgerDashboardImport
+      parentRoute: typeof LedgerImport
+    }
+    '/_ledger/vendors': {
+      id: '/_ledger/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof LedgerVendorsImport
+      parentRoute: typeof LedgerImport
+    }
+    '/_ledger/accounts/$accountId': {
+      id: '/_ledger/accounts/$accountId'
+      path: '/accounts/$accountId'
+      fullPath: '/accounts/$accountId'
+      preLoaderRoute: typeof LedgerAccountsAccountIdImport
+      parentRoute: typeof LedgerImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface LedgerRouteChildren {
+  LedgerCategoriesRoute: typeof LedgerCategoriesRoute
+  LedgerDashboardRoute: typeof LedgerDashboardRoute
+  LedgerVendorsRoute: typeof LedgerVendorsRoute
+  LedgerAccountsAccountIdRoute: typeof LedgerAccountsAccountIdRoute
+}
+
+const LedgerRouteChildren: LedgerRouteChildren = {
+  LedgerCategoriesRoute: LedgerCategoriesRoute,
+  LedgerDashboardRoute: LedgerDashboardRoute,
+  LedgerVendorsRoute: LedgerVendorsRoute,
+  LedgerAccountsAccountIdRoute: LedgerAccountsAccountIdRoute,
+}
+
+const LedgerRouteWithChildren =
+  LedgerRoute._addFileChildren(LedgerRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/accounts/$accountId': typeof AccountsAccountIdRoute
-  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
-  '/ledgers': typeof LedgersIndexRoute
+  '': typeof LedgerRouteWithChildren
+  '/ledgers': typeof LedgersRoute
+  '/categories': typeof LedgerCategoriesRoute
+  '/dashboard': typeof LedgerDashboardRoute
+  '/vendors': typeof LedgerVendorsRoute
+  '/accounts/$accountId': typeof LedgerAccountsAccountIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/accounts/$accountId': typeof AccountsAccountIdRoute
-  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
-  '/ledgers': typeof LedgersIndexRoute
+  '': typeof LedgerRouteWithChildren
+  '/ledgers': typeof LedgersRoute
+  '/categories': typeof LedgerCategoriesRoute
+  '/dashboard': typeof LedgerDashboardRoute
+  '/vendors': typeof LedgerVendorsRoute
+  '/accounts/$accountId': typeof LedgerAccountsAccountIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/accounts/$accountId': typeof AccountsAccountIdRoute
-  '/ledgers/$ledgerId': typeof LedgersLedgerIdRoute
-  '/ledgers/': typeof LedgersIndexRoute
+  '/_ledger': typeof LedgerRouteWithChildren
+  '/ledgers': typeof LedgersRoute
+  '/_ledger/categories': typeof LedgerCategoriesRoute
+  '/_ledger/dashboard': typeof LedgerDashboardRoute
+  '/_ledger/vendors': typeof LedgerVendorsRoute
+  '/_ledger/accounts/$accountId': typeof LedgerAccountsAccountIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers'
+  fullPaths:
+    | ''
+    | '/ledgers'
+    | '/categories'
+    | '/dashboard'
+    | '/vendors'
+    | '/accounts/$accountId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers'
-  id: '__root__' | '/accounts/$accountId' | '/ledgers/$ledgerId' | '/ledgers/'
+  to:
+    | ''
+    | '/ledgers'
+    | '/categories'
+    | '/dashboard'
+    | '/vendors'
+    | '/accounts/$accountId'
+  id:
+    | '__root__'
+    | '/_ledger'
+    | '/ledgers'
+    | '/_ledger/categories'
+    | '/_ledger/dashboard'
+    | '/_ledger/vendors'
+    | '/_ledger/accounts/$accountId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  AccountsAccountIdRoute: typeof AccountsAccountIdRoute
-  LedgersLedgerIdRoute: typeof LedgersLedgerIdRoute
-  LedgersIndexRoute: typeof LedgersIndexRoute
+  LedgerRoute: typeof LedgerRouteWithChildren
+  LedgersRoute: typeof LedgersRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  AccountsAccountIdRoute: AccountsAccountIdRoute,
-  LedgersLedgerIdRoute: LedgersLedgerIdRoute,
-  LedgersIndexRoute: LedgersIndexRoute,
+  LedgerRoute: LedgerRouteWithChildren,
+  LedgersRoute: LedgersRoute,
 }
 
 export const routeTree = rootRoute
@@ -115,19 +199,37 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/accounts/$accountId",
-        "/ledgers/$ledgerId",
-        "/ledgers/"
+        "/_ledger",
+        "/ledgers"
       ]
     },
-    "/accounts/$accountId": {
-      "filePath": "accounts/$accountId.tsx"
+    "/_ledger": {
+      "filePath": "_ledger.tsx",
+      "children": [
+        "/_ledger/categories",
+        "/_ledger/dashboard",
+        "/_ledger/vendors",
+        "/_ledger/accounts/$accountId"
+      ]
     },
-    "/ledgers/$ledgerId": {
-      "filePath": "ledgers/$ledgerId.tsx"
+    "/ledgers": {
+      "filePath": "ledgers.tsx"
     },
-    "/ledgers/": {
-      "filePath": "ledgers/index.tsx"
+    "/_ledger/categories": {
+      "filePath": "_ledger/categories.tsx",
+      "parent": "/_ledger"
+    },
+    "/_ledger/dashboard": {
+      "filePath": "_ledger/dashboard.tsx",
+      "parent": "/_ledger"
+    },
+    "/_ledger/vendors": {
+      "filePath": "_ledger/vendors.tsx",
+      "parent": "/_ledger"
+    },
+    "/_ledger/accounts/$accountId": {
+      "filePath": "_ledger/accounts/$accountId.tsx",
+      "parent": "/_ledger"
     }
   }
 }

@@ -10,8 +10,6 @@ import {
 } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { RouterProvider } from 'react-aria-components';
-import { Sidebar } from '../components/Sidebar.tsx';
-import { Ledger } from '../types.ts';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -36,21 +34,6 @@ declare module 'react-aria-components' {
 
 function RootRoute() {
   let router = useRouter();
-  const ledger: Ledger = {
-    id: 1,
-    name: 'My Ledger',
-    accounts: [
-      {
-        id: 1,
-        name: 'Checking',
-        financialCategory: {
-          id: 1,
-          name: 'Checking/Saving',
-          type: 1,
-        },
-      },
-    ],
-  };
 
   return (
     <>
@@ -58,13 +41,8 @@ function RootRoute() {
         navigate={(path, options) => router.navigate({ ...path, ...options })}
         useHref={({ to }) => router.buildLocation({ to }).href}
       >
-        <main className="h-screen flex bg-slate-800 px-3 py-4">
-          <div className="top-0 h-full w-64 bg-slate-700 rounded-lg">
-            <Sidebar ledger={ledger} />
-          </div>
-          <div className="bg-slate-500 h-full w-full overflow-hidden rounded-md">
-            <Outlet />
-          </div>
+        <main className="h-screen bg-slate-800 px-3 py-4">
+          <Outlet />
         </main>
         <TanStackRouterDevtools />
         <ReactQueryDevtools initialIsOpen={false} />

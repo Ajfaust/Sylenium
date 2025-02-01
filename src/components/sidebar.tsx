@@ -1,3 +1,4 @@
+import { Account } from '@/types.ts';
 import { useState } from 'react';
 import {
   Button,
@@ -6,112 +7,87 @@ import {
   ListBoxItem,
   ListBoxSection,
 } from 'react-aria-components';
-import { IconType } from 'react-icons';
-import { PiBank, PiGear, PiTag } from 'react-icons/pi';
-import { Account, Ledger } from '../types.ts';
+import { PiBank, PiStorefront, PiTag } from 'react-icons/pi';
 
-interface NavItem {
-  title: string;
-  icon: IconType;
-  hasSubitems: boolean;
-  subitems?: Array<Account>;
-  url: string;
+interface Props {
+  accounts: Array<Account>;
 }
 
-export const Sidebar = (ledger: Ledger) => {
-  const navItems: NavItem[] = [
-    {
-      title: 'Accounts',
-      icon: PiBank,
-      hasSubitems: true,
-      subitems: ledger.accounts,
-      url: '/accounts/$accountId',
-    },
-    {
-      title: 'Categories',
-      icon: PiTag,
-      hasSubitems: false,
-      url: '/categories',
-    },
-    {
-      title: 'Settings',
-      icon: PiGear,
-      hasSubitems: false,
-      url: '/settings',
-    },
-  ];
-
+export const Sidebar = ({ accounts }: Props) => {
   return (
     <ListBox
       aria-label="Sidebar"
       selectionMode="single"
       className="space-y-1 w-full border-3 h-full rounded-lg border-amber-50 p-2 overflow-hidden"
     >
-      <ListBoxSection className="py-2 px-4">
+      <ListBoxSection className="py-2 px-4" aria-label="SidebarHeader">
         <Header className="text-2xl font-semibold text-indigo-400 my-3 border-b-2 pb-4">
-          $ylenium
+          Sylenium
         </Header>
       </ListBoxSection>
-      {navItems.map((item: NavItem) =>
-        item.hasSubitems ? (
-          <ListBoxSectionWithDropdown
-            key={item.title}
-            title={item.title}
-            icon={item.icon}
-            hasSubitems={item.hasSubitems}
-            subitems={item.subitems}
-            url={item.url}
-          />
-        ) : (
-          <ListBoxSection key={item.title}>
-            <ListBoxItem
-              textValue={item.title}
-              className="group flex items-center rounded-lg p-2 text-amber-50 cursor-pointer hover:bg-indigo-600"
-            >
-              <item.icon size={25} strokeWidth={1.5} />
-              <span className="pl-5 text-lg">{item.title}</span>
-            </ListBoxItem>
-          </ListBoxSection>
-        )
-      )}
+      <ListBoxSection>
+        <AccountListItem accounts={accounts} />
+        <ListBoxItem
+          textValue="Categories"
+          href={{
+            to: '/categories',
+          }}
+        >
+          <div className="flex items-center text-amber-50 hover:bg-indigo-600 rounded-lg p-2">
+            <PiTag size={25} strokeWidth={1.5} />
+            <span className="pl-4 text-lg">Categories</span>
+          </div>
+        </ListBoxItem>
+        <ListBoxItem textValue="Vendors" href={{ to: '/vendors' }}>
+          <div className="flex items-center text-amber-50 hover:bg-indigo-600 rounded-lg p-2">
+            <PiStorefront size={25} strokeWidth={1.5} />
+            <span className="pl-4 text-lg">Vendors</span>
+          </div>
+        </ListBoxItem>
+      </ListBoxSection>
     </ListBox>
   );
 };
 
-const ListBoxSectionWithDropdown = (item: NavItem) => {
+function AccountListItem({ accounts }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  // @ts-ignore
+  function handleOnPress() {
+    setIsOpen(!isOpen);
+  }
+
   return (
-    <ListBoxSection className="text-amber-50">
-      <ListBoxItem textValue={item.title} className={`group text-amber-50`}>
+    <>
+      <ListBoxItem textValue="Accounts" className={`text-amber-50`}>
         <Button
-          onPress={() => setIsOpen((prevState) => !prevState)}
+          onPress={() => handleOnPress()}
           slot="trigger"
           className="w-full h-full flex items-center rounded-lg p-2 cursor-pointer hover:bg-indigo-600"
         >
-          <item.icon size={25} strokeWidth={1.5} />
-          <span className="pl-5 text-lg">{item.title}</span>
+          <PiBank size={25} strokeWidth={1.5} />
+          <span className="pl-5 text-lg">Accounts</span>
         </Button>
       </ListBoxItem>
       <ListBoxSection
-        aria-label={`${item.title}-subitems`}
-        className={`border-l-amber-100 border-l-2 ml-2 transition-all ease-in-out duration-300 ${isOpen ? 'h-full' : 'h-0 opacity-0'}`}
+        aria-label="AccountItems"
+        className={`border-l-amber-100 w-full border-l-2 ml-2 overflow-hidden transition-all ease-in-out duration-300 ${isOpen ? 'my-2' : 'h-0 my-0'}`}
       >
-        {item.subitems?.map((subitem) => (
+        {accounts?.map((account) => (
           <ListBoxItem
-            key={subitem.id}
+            key={account.id}
+            textValue={account.name}
             href={{
-              // @ts-ignore
-              to: item.url,
-              params: { accountId: subitem.id.toString() },
+              to: '/accounts/$accountId',
+              params: {
+                accountId: account.id.toString(),
+              },
             }}
-            className="ml-2 p-2 cursor-pointer hover:bg-indigo-600 rounded-md text-amber-50"
+            className="ml-2 p-1 cursor-pointer hover:bg-indigo-600 rounded-lg text-amber-50"
           >
-            {subitem.name}
+            <span>{account.name}</span>
           </ListBoxItem>
         ))}
       </ListBoxSection>
-    </ListBoxSection>
+    </>
   );
-};
+}
