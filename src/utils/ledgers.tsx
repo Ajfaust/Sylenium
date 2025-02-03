@@ -4,28 +4,15 @@ import { queryOptions } from '@tanstack/react-query';
 const api = '/api/ledgers';
 
 async function getLedgers() {
-  const result = await fetch(api);
-  if (!result.ok) {
-    throw new Error('Something went wrong');
-  }
-
-  return result.json();
+  return await fetch(api).then((response) => response.json());
 }
 
 async function getLedgerById(id: string) {
-  const result = await fetch(`${api}/${id}`);
-  if (!result.ok) {
-    throw new Error(`Error retrieving ledger with id: ${id}`);
-  }
-
-  return result.json();
+  return await fetch(`${api}/${id}`).then((response) => response.json());
 }
 
-async function getActiveLedger() {
-  const result = await fetch(`${api}/active`);
-  if (!result.ok) throw new Error('Error retrieving active ledger');
-
-  return result.json();
+async function getActiveLedgerId() {
+  return await fetch(`${api}/active`).then((response) => response.json());
 }
 
 function getLedgerByIdQueryOptions(id: string) {
@@ -42,18 +29,16 @@ function getLedgersQueryOptions() {
   });
 }
 
-function getActiveLedgerQueryOptions() {
-  return queryOptions<Ledger, Error>({
-    queryKey: ['activeLedger', api],
-    queryFn: getActiveLedger,
+function getActiveLedgerIdQueryOptions() {
+  return queryOptions<Partial<Ledger>, Error>({
+    queryKey: ['activeLedgerId', api],
+    queryFn: getActiveLedgerId,
   });
 }
 
 export {
-  getLedgers,
-  getLedgerById,
-  getActiveLedger,
+  getActiveLedgerId,
   getLedgersQueryOptions,
   getLedgerByIdQueryOptions,
-  getActiveLedgerQueryOptions,
+  getActiveLedgerIdQueryOptions,
 };

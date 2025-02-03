@@ -7,7 +7,7 @@ import {
   ListBoxItem,
   ListBoxSection,
 } from 'react-aria-components';
-import { PiBank, PiStorefront, PiTag } from 'react-icons/pi';
+import { PiBank, PiCaretDown, PiStorefront, PiTag } from 'react-icons/pi';
 
 interface Props {
   accounts: Array<Account>;
@@ -62,17 +62,23 @@ function AccountListItem({ accounts }: Props) {
         <Button
           onPress={() => handleOnPress()}
           slot="trigger"
-          className="w-full h-full flex items-center rounded-lg p-2 cursor-pointer hover:bg-indigo-600"
+          className="w-full h-full flex items-center justify-between rounded-lg p-2 cursor-pointer hover:bg-indigo-600"
         >
-          <PiBank size={25} strokeWidth={1.5} />
-          <span className="pl-5 text-lg">Accounts</span>
+          <div className="flex items-center">
+            <PiBank size={25} strokeWidth={1.5} />
+            <span className="pl-5 text-lg">Accounts</span>
+          </div>
+          <PiCaretDown
+            size={15}
+            className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+          />
         </Button>
       </ListBoxItem>
       <ListBoxSection
         aria-label="AccountItems"
-        className={`border-l-amber-100 w-full border-l-2 ml-2 overflow-hidden transition-all ease-in-out duration-300 ${isOpen ? 'my-2' : 'h-0 my-0'}`}
+        className={`border-l-amber-100 w-full border-l-2 ml-2 overflow-hidden transition-all ease-in-out duration-300 ${isOpen ? '' : 'h-0'}`}
       >
-        {accounts?.map((account) => (
+        {accounts.map((account) => (
           <ListBoxItem
             key={account.id}
             textValue={account.name}

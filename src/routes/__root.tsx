@@ -44,9 +44,9 @@ function RootRoute() {
         <main className="h-screen bg-slate-800 px-3 py-4">
           <Outlet />
         </main>
-        <TanStackRouterDevtools />
-        <ReactQueryDevtools initialIsOpen={false} />
       </RouterProvider>
+      <TanStackRouterDevtools />
+      <ReactQueryDevtools initialIsOpen={false} />
     </>
   );
 }

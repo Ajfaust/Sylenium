@@ -1,27 +1,14 @@
-import { Ledger, LedgerDto } from '@/types.ts';
-import {
-  getActiveLedgerQueryOptions,
-  getLedgersQueryOptions,
-} from '@/utils/ledgers.tsx';
+import { getLedgersQueryOptions } from '@/utils/ledgers.tsx';
 import {
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
-import { useEffect } from 'react';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { Link } from 'react-aria-components';
 import { PiSignIn } from 'react-icons/pi';
 
 export const Route = createFileRoute('/ledgers')({
-  loader: async ({ context }) => {
-    const ledgers = await context.queryClient.ensureQueryData(
-      getLedgersQueryOptions()
-    );
-
-    return { ledgers: ledgers };
-  },
   component: LedgersComponent,
 });
 
@@ -30,40 +17,30 @@ function LedgersComponent() {
     getLedgersQueryOptions()
   );
 
-  const { data: active } = useQuery(getActiveLedgerQueryOptions());
-
   const client = useQueryClient();
+  const navigate = useNavigate();
 
-  const updateLedger = useMutation({
-    mutationFn: async (l: Ledger) => {
-      const dto: LedgerDto = {
-        name: l.name,
-        isActive: l.isActive,
-      };
-
-      await fetch(`/api/ledgers/${l.id}`, {
+  const updateActiveLedger = useMutation({
+    mutationFn: async (id: number) => {
+      await fetch(`/api/ledgers/active`, {
         method: 'PUT',
-        body: JSON.stringify(dto),
+        body: JSON.stringify({ id: id }),
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-        .catch((e) => console.log(e))
-        .then(() => client.invalidateQueries({ queryKey: ['activeLedger'] }));
+      }).catch((e) => console.log(e));
     },
   });
 
-  useEffect(() => {
-    if (active != null && active.id >= 0) {
-      active.isActive = false;
-      updateLedger.mutate(active);
-      client.removeQueries({ queryKey: ['activeLedger'] }); // Remove the query to clear old values
-    }
-  });
-
-  function handleOnPress(ledger: Ledger) {
-    ledger.isActive = true;
-    updateLedger.mutate(ledger);
+  function handleOnPress(id: number) {
+    updateActiveLedger.mutate(id, {
+      onSuccess: () => {
+        void client.invalidateQueries({
+          queryKey: ['activeLedgerId', '/api/ledgers'],
+        });
+        void navigate({ to: '/dashboard' });
+      },
+    });
   }
 
   if (isError) throw error;
@@ -81,10 +58,8 @@ function LedgersComponent() {
             <Link
               key={l.id}
               className="flex react-aria-Button text-lg bg-slate-200 justify-between m-2 rounded-md p-2 hover:bg-indigo-400"
-              href={{
-                to: '/dashboard',
-              }}
-              onPress={() => handleOnPress(l)}
+              href={{ to: '/dashboard' }}
+              onPress={() => handleOnPress(l.id)}
             >
               {l.name}
               <PiSignIn size={25} strokeWidth={2} />

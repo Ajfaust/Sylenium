@@ -42,6 +42,7 @@ export type TransactionCategory = {
   id: number;
   parentId?: number;
   name: string;
+  subcategories?: Array<TransactionCategory>;
 };
 
 export type Vendor = {
