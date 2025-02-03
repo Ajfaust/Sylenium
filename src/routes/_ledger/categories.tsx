@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_ledger/categories')({
     const result = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = result?.id;
+    const id = result.id ?? -1;
 
     return { id };
   },
@@ -20,7 +20,7 @@ function RouteComponent() {
   const { id } = Route.useLoaderData();
 
   const { data, isLoading, isError, error } = useSuspenseQuery(
-    getAllCategoriesForLedgerQueryOptions(id?.toString() ?? '')
+    getAllCategoriesForLedgerQueryOptions(id.toString())
   );
 
   if (isError) {
