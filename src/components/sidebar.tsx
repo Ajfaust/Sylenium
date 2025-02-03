@@ -76,7 +76,7 @@ function AccountListItem({ accounts }: Props) {
       </ListBoxItem>
       <ListBoxSection
         aria-label="AccountItems"
-        className={`border-l-amber-100 w-full border-l-2 ml-2 overflow-hidden transition-all ease-in-out duration-300 ${isOpen ? '' : 'h-0'}`}
+        className={`border-l-amber-100 w-full border-l-2 ml-2 overflow-hidden transition-all ease-in-out duration-300 my-2 ${isOpen ? '' : 'h-0'}`}
       >
         {accounts.map((account) => (
           <ListBoxItem
@@ -88,7 +88,7 @@ function AccountListItem({ accounts }: Props) {
                 accountId: account.id.toString(),
               },
             }}
-            className="ml-2 p-1 cursor-pointer hover:bg-indigo-600 rounded-lg text-amber-50"
+            className="ml-2 my-5 cursor-pointer hover:bg-indigo-600 rounded-lg text-amber-50"
           >
             <span>{account.name}</span>
           </ListBoxItem>
