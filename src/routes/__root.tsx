@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
@@ -41,9 +42,11 @@ function RootRoute() {
         navigate={(path, options) => router.navigate({ ...path, ...options })}
         useHref={({ to }) => router.buildLocation({ to }).href}
       >
-        <main className="h-screen bg-slate-800 px-3 py-4">
-          <Outlet />
-        </main>
+        <MantineProvider defaultColorScheme="dark">
+          <main className="h-screen bg-slate-800 px-3 py-4">
+            <Outlet />
+          </main>
+        </MantineProvider>
       </RouterProvider>
       <TanStackRouterDevtools />
       <ReactQueryDevtools initialIsOpen={false} />

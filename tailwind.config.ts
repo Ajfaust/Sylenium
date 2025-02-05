@@ -4,8 +4,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [
-    require('tailwindcss-react-aria-components'),
-    require('tailwindcss-animate'),
-  ],
+  plugins: [],
 };
