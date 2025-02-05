@@ -1,3 +1,6 @@
+import { ReactElement } from 'react';
+import { IconType } from 'react-icons';
+
 export type Account = {
   id: number;
   financialCategory: FinancialCategory;
@@ -48,4 +51,11 @@ export type TransactionCategory = {
 export type Vendor = {
   id: number;
   name: string;
+};
+
+export type NavItem = {
+  label: string;
+  link: ReactElement;
+  icon?: IconType;
+  children?: () => Array<NavItem>;
 };
