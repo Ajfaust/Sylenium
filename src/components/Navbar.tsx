@@ -1,3 +1,4 @@
+import { NewAccountModal } from '@/components/NewAccountModal.tsx';
 import { Account, NavItem } from '@/types.ts';
 import {
   AppShell,
@@ -50,12 +51,7 @@ export const Navbar = ({ accounts, ...props }: NavbarProps) => {
         map.push({
           icon: PiPlus,
           label: 'New Account',
-          link: (
-            <Link
-              to="/accounts/$accountId"
-              params={{ accountId: 'newAccount' }}
-            />
-          ),
+          link: <NewAccountModal />,
         });
         return map;
       },
@@ -81,7 +77,9 @@ export const Navbar = ({ accounts, ...props }: NavbarProps) => {
         {navItems.map((item, index) => (
           <NavLink
             key={item.label}
-            label={item.label}
+            m={5}
+            variant="filled"
+            label={<Text>{item.label}</Text>}
             active={index === activeItem}
             leftSection={item.icon && <item.icon size={25} strokeWidth={1.5} />}
             rightSection={
@@ -101,21 +99,28 @@ export const Navbar = ({ accounts, ...props }: NavbarProps) => {
             renderRoot={(props) => cloneElement(item.link, { ...props })}
             className="rounded-lg"
           >
-            {item.children &&
-              item.children().map((c, cIndex) => (
-                <NavLink
-                  key={c.label}
-                  label={c.label}
-                  active={cIndex === activeChild}
-                  leftSection={c.icon && <c.icon size={15} strokeWidth={1.5} />}
-                  onClick={() => {
-                    if (activeItem !== index) setActiveItem(index);
-                    if (c.label != 'New Account') setActiveChild(cIndex);
-                  }}
-                  renderRoot={(props) => cloneElement(c.link, { ...props })}
-                  className={`rounded-lg ${c.label == 'New Item' ? 'opacity-50 text-gray-500' : ''}`}
-                />
-              ))}
+            {item.children && (
+              <div className={`border-dashed border-l border-l-blue-600`}>
+                {item.children().map((c, cIndex) => (
+                  <NavLink
+                    key={c.label}
+                    variant="subtle"
+                    m={5}
+                    label={<Text>{c.label}</Text>}
+                    active={cIndex === activeChild}
+                    leftSection={
+                      c.icon && <c.icon size={15} strokeWidth={1.5} />
+                    }
+                    onClick={() => {
+                      if (activeItem !== index) setActiveItem(index);
+                      if (c.label != 'New Account') setActiveChild(cIndex);
+                    }}
+                    renderRoot={(props) => cloneElement(c.link, { ...props })}
+                    className={`rounded-lg ${c.label == 'New Item' ? 'opacity-50 text-gray-500' : ''}`}
+                  />
+                ))}
+              </div>
+            )}
           </NavLink>
         ))}
       </AppShell.Section>
