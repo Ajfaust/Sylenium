@@ -19,10 +19,11 @@ import {
 } from 'react-icons/pi';
 
 interface NavbarProps extends AppShellNavbarProps {
+  ledgerId: string;
   accounts: Array<Account>;
 }
 
-export const Navbar = ({ accounts, ...props }: NavbarProps) => {
+export const Navbar = ({ ledgerId, accounts, ...props }: NavbarProps) => {
   const [activeItem, setActiveItem] = useState(0);
   const [activeChild, setActiveChild] = useState(-1);
 
@@ -51,7 +52,7 @@ export const Navbar = ({ accounts, ...props }: NavbarProps) => {
         map.push({
           icon: PiPlus,
           label: 'New Account',
-          link: <NewAccountModal />,
+          link: <NewAccountModal ledgerId={ledgerId} />,
         });
         return map;
       },
@@ -70,14 +71,14 @@ export const Navbar = ({ accounts, ...props }: NavbarProps) => {
 
   return (
     <AppShellNavbar {...props}>
-      <AppShell.Section>
+      <AppShell.Section pl={10} pb={10}>
         <Text size="xl">Hello</Text>
       </AppShell.Section>
       <AppShell.Section grow>
         {navItems.map((item, index) => (
           <NavLink
             key={item.label}
-            m={5}
+            my={5}
             variant="filled"
             label={<Text>{item.label}</Text>}
             active={index === activeItem}

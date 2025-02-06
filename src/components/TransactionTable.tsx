@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-table';
 
 import { Table } from '@mantine/core';
-import { PiCheck } from 'react-icons/pi';
+import { PiCheckCircleFill } from 'react-icons/pi';
 import { Transaction } from '../types.ts';
 
 type TransactionTableProps = {
@@ -49,7 +49,7 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
     }),
     columnHelper.accessor('cleared', {
       header: 'Cleared',
-      cell: (info) => info.getValue() && <PiCheck size={15} />,
+      cell: (info) => info.getValue() && <PiCheckCircleFill size={20} />,
     }),
   ];
 

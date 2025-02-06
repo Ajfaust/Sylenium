@@ -9,7 +9,7 @@ async function getAccountById(accountId: string) {
 }
 
 async function getAllAccountsForLedger(id: string) {
-  return await fetch(`/api/ledgers/${id}/accounts`)
+  return await fetch(`/api/ledgers/${id}/financial-accounts`)
     .then(async (response) => await response.json())
     .then((r) => r.accounts)
     .catch((e) => console.log(e.message));
@@ -36,7 +36,7 @@ function accountQueryOptions(accountId: string) {
 
 function allAccountsForLedgerQueryOptions(ledgerId: string) {
   return queryOptions<Array<Account>, Error>({
-    queryKey: ['accounts', ledgerId, api],
+    queryKey: ['accounts', ledgerId, '/api/ledgers'],
     queryFn: () => getAllAccountsForLedger(ledgerId),
   });
 }

@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_ledger')({
     const ledger = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = ledger.id ?? -1;
+    const id = ledger.id?.toString();
 
     return { id };
   },
@@ -25,14 +25,14 @@ function ActiveLedgerComponent() {
     throw new Error('Active ID is undefined');
   }
 
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle }] = useDisclosure(true);
 
   const {
     data: accounts,
     isLoading,
     isError,
     error,
-  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(id.toString()));
+  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(id));
 
   if (isError) throw error;
 
@@ -64,7 +64,7 @@ function ActiveLedgerComponent() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar aria-label="Navbar">
-        <Navbar accounts={accounts} p="md" />
+        <Navbar ledgerId={id} accounts={accounts} p="md" />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />

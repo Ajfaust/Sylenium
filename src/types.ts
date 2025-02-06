@@ -43,6 +43,12 @@ export type TransactionCategory = {
   subcategories?: Array<TransactionCategory>;
 };
 
+export type AccountCategory = {
+  id: number;
+  name: string;
+  type: AccountType;
+};
+
 export type Vendor = {
   id: number;
   name: string;
@@ -54,3 +60,8 @@ export type NavItem = {
   icon?: IconType;
   children?: () => Array<NavItem>;
 };
+
+export enum AccountType {
+  Asset,
+  Liability,
+}

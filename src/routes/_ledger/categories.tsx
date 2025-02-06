@@ -1,6 +1,6 @@
 import { CategoryAccordion } from '@/components/CategoryAccordion.tsx';
-import { getAllCategoriesForLedgerQueryOptions } from '@/utils/categories.tsx';
 import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
+import { getAllCategoriesForLedgerQueryOptions } from '@/utils/transaction-categories.tsx';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/_ledger/categories')({
     const result = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = result.id ?? -1;
+    const id = result ?? -1;
 
     return { id };
   },
