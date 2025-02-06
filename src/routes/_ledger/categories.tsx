@@ -1,4 +1,4 @@
-import { CategoryTable } from '@/components/CategoryTable.tsx';
+import { CategoryAccordion } from '@/components/CategoryAccordion.tsx';
 import { getAllCategoriesForLedgerQueryOptions } from '@/utils/categories.tsx';
 import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -30,9 +30,5 @@ function RouteComponent() {
 
   if (isLoading) return <h1>Loading...</h1>;
 
-  return (
-    <>
-      <CategoryTable categories={data} />
-    </>
-  );
+  return <CategoryAccordion categories={data} />;
 }
