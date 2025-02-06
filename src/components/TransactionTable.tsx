@@ -6,14 +6,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import {
-  Cell,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
-} from 'react-aria-components';
+
+import { Table } from '@mantine/core';
 import { PiCheck } from 'react-icons/pi';
 import { Transaction } from '../types.ts';
 
@@ -67,12 +61,12 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
 
   return (
     data.length > 0 && (
-      <div className="mt-6 mx-5 rounded-lg overflow-hidden border border-border w-auto">
-        <Table className="border w-full rounded-lg">
-          <TableHeader className="bg-secondary">
+      <Table>
+        <Table.Thead>
+          <Table.Tr>
             {table.getHeaderGroups().map((group) => {
               return group.headers.map((header) => (
-                <Column key={header.id} isRowHeader={true}>
+                <Table.Th key={header.id}>
                   <div>
                     {header.isPlaceholder
                       ? null
@@ -81,23 +75,23 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
                           header.getContext()
                         )}
                   </div>
-                </Column>
+                </Table.Th>
               ));
             })}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <Row key={row.id} className="hover:bg-indigo-400">
-                {row.getVisibleCells().map((cell) => (
-                  <Cell key={cell.id} className="border">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Cell>
-                ))}
-              </Row>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {table.getRowModel().rows.map((row) => (
+            <Table.Tr key={row.id} className="hover:bg-indigo-400">
+              {row.getVisibleCells().map((cell) => (
+                <Table.Td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </Table.Td>
+              ))}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
     )
   );
 };
