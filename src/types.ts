@@ -24,11 +24,6 @@ export type Ledger = {
   financialCategories: Array<FinancialCategory>;
 };
 
-export type LedgerDto = {
-  name: string;
-  isActive: boolean;
-};
-
 export type Transaction = {
   id: number;
   account: Account;
