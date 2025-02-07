@@ -19,7 +19,7 @@ import {
 } from 'react-icons/pi';
 
 interface NavbarProps extends AppShellNavbarProps {
-  ledgerId: string;
+  ledgerId: number;
   accounts: Array<Account>;
 }
 

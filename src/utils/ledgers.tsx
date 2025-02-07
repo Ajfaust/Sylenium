@@ -17,7 +17,7 @@ async function getActiveLedgerId() {
 
 function getLedgerByIdQueryOptions(id: string) {
   return queryOptions<Ledger, Error>({
-    queryKey: ['ledgers', id, api],
+    queryKey: ['ledgers', api, id],
     queryFn: () => getLedgerById(id),
   });
 }

@@ -4,6 +4,9 @@ import { IconType } from 'react-icons';
 export type Account = {
   id: number;
   financialCategory: FinancialCategory;
+  ledger: Ledger;
+  ledgerId?: number;
+  faCategoryId?: number;
   name: string;
   transactions: Array<Transaction>;
 };

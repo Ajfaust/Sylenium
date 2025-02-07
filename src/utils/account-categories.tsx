@@ -12,7 +12,7 @@ async function getAllAccountCategoriesForLedger(
 
 function getAllAccountCategoriesForLedgerQueryOptions(ledgerId: string) {
   return queryOptions({
-    queryKey: ['accountCategories', ledgerId, '/api/ledgers'],
+    queryKey: ['accountCategories', '/api/ledgers', ledgerId],
     queryFn: () => getAllAccountCategoriesForLedger(ledgerId),
   });
 }

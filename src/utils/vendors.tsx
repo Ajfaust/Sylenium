@@ -9,7 +9,7 @@ async function getAllVendorsForLedger(ledgerId: string) {
 
 function getAllVendorsForLedgerQueryOptions(ledgerId: string) {
   return queryOptions({
-    queryKey: ['vendors', ledgerId, '/api/vendors'],
+    queryKey: ['vendors', '/api/vendors', ledgerId],
     queryFn: () => getAllVendorsForLedger(ledgerId),
   });
 }

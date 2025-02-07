@@ -11,12 +11,12 @@ export const Route = createFileRoute('/_ledger/accounts/$accountId')({
 });
 
 function AccountComponent() {
-  const act = Route.useParams();
+  const { accountId } = Route.useParams();
   const {
     data: account,
     isLoading,
     isError,
-  } = useSuspenseQuery(accountQueryOptions(act.toString()));
+  } = useSuspenseQuery(accountQueryOptions(accountId));
 
   if (isError) throw new Error('Error loading account');
 

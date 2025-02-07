@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_ledger')({
     const ledger = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = ledger.id?.toString();
+    const id = ledger.id;
 
     return { id };
   },
@@ -32,7 +32,7 @@ function ActiveLedgerComponent() {
     isLoading,
     isError,
     error,
-  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(id));
+  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(id.toString()));
 
   if (isError) throw error;
 

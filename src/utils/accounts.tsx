@@ -29,14 +29,14 @@ async function createAccount(account: Partial<Account>) {
 
 function accountQueryOptions(accountId: string) {
   return queryOptions<Account, Error>({
-    queryKey: ['account', accountId, api],
+    queryKey: ['account', api, accountId],
     queryFn: () => getAccountById(accountId),
   });
 }
 
 function allAccountsForLedgerQueryOptions(ledgerId: string) {
   return queryOptions<Array<Account>, Error>({
-    queryKey: ['accounts', ledgerId, '/api/ledgers'],
+    queryKey: ['accounts', '/api/ledgers', ledgerId],
     queryFn: () => getAllAccountsForLedger(ledgerId),
   });
 }
