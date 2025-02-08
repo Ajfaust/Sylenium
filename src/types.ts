@@ -30,8 +30,11 @@ export type Ledger = {
 export type Transaction = {
   id: number;
   account: Account;
+  accountId: number;
   category: TransactionCategory;
+  categoryId: number;
   vendor: Vendor;
+  vendorId: number;
   date: Date;
   description: string;
   inflow: number;

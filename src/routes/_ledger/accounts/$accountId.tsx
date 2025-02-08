@@ -1,6 +1,10 @@
+import { NewTransactionForm } from '@/components/NewTransaction.tsx';
 import { TransactionTable } from '@/components/TransactionTable.tsx';
 import { accountQueryOptions } from '@/utils/accounts.tsx';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
+import { Button, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_ledger/accounts/$accountId')({
@@ -12,6 +16,9 @@ export const Route = createFileRoute('/_ledger/accounts/$accountId')({
 
 function AccountComponent() {
   const { accountId } = Route.useParams();
+  const { data: ledger } = useQuery(getActiveLedgerIdQueryOptions());
+  const [opened, { open, close }] = useDisclosure(false);
+
   const {
     data: account,
     isLoading,
@@ -26,5 +33,24 @@ function AccountComponent() {
 
   console.log(account);
 
-  return <TransactionTable data={account.transactions} />;
+  return (
+    <>
+      <>
+        <Modal
+          opened={opened}
+          onClose={close}
+          title="NewTransaction"
+          size="auto"
+        >
+          <NewTransactionForm
+            ledgerId={ledger?.id ?? 0}
+            accountId={parseInt(accountId)}
+            closeModal={close}
+          />
+        </Modal>
+        <Button onClick={open}>New Transaction</Button>
+      </>
+      <TransactionTable data={account.transactions} />
+    </>
+  );
 }

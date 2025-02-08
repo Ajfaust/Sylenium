@@ -4,6 +4,7 @@ import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen.ts';
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 
 const queryClient = new QueryClient();
 

@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+import { DatesProvider } from '@mantine/dates';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
@@ -35,6 +36,7 @@ declare module 'react-aria-components' {
 
 function RootRoute() {
   let router = useRouter();
+  const userLang = navigator.language || navigator.languages[0];
 
   return (
     <>
@@ -43,9 +45,11 @@ function RootRoute() {
         useHref={({ to }) => router.buildLocation({ to }).href}
       >
         <MantineProvider defaultColorScheme="dark">
-          <main className="h-screen bg-slate-800 px-3 py-4">
-            <Outlet />
-          </main>
+          <DatesProvider settings={{ locale: userLang }}>
+            <main className="h-screen bg-slate-800 px-3 py-4">
+              <Outlet />
+            </main>
+          </DatesProvider>
         </MantineProvider>
       </RouterProvider>
       <TanStackRouterDevtools />
