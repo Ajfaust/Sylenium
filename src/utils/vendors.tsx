@@ -1,4 +1,15 @@
+import { Vendor } from '@/types.ts';
 import { queryOptions } from '@tanstack/react-query';
+
+async function createVendor(vendor: Partial<Vendor>) {
+  return await fetch('/api/vendors', {
+    method: 'POST',
+    body: JSON.stringify(vendor),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
 
 async function getAllVendorsForLedger(ledgerId: string) {
   return await fetch(`/api/ledgers/${ledgerId}/vendors`)
@@ -14,4 +25,4 @@ function getAllVendorsForLedgerQueryOptions(ledgerId: string) {
   });
 }
 
-export { getAllVendorsForLedgerQueryOptions };
+export { createVendor, getAllVendorsForLedgerQueryOptions };

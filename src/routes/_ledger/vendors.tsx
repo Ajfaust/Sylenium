@@ -1,3 +1,4 @@
+import { NewVendorModal } from '@/components/NewVendorModal.tsx';
 import { VendorList } from '@/components/VendorList.tsx';
 import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
 import { getAllVendorsForLedgerQueryOptions } from '@/utils/vendors.tsx';
@@ -26,5 +27,10 @@ function VendorsComponent() {
 
   if (isLoading) return <h1>Loading...</h1>;
 
-  return <VendorList vendors={data} />;
+  return (
+    <>
+      <NewVendorModal ledgerId={id} />
+      <VendorList vendors={data} />
+    </>
+  );
 }

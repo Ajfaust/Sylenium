@@ -58,6 +58,7 @@ export type AccountCategory = {
 
 export type Vendor = {
   id: number;
+  ledgerId: number;
   name: string;
 };
 
@@ -72,3 +73,8 @@ export enum AccountType {
   Asset,
   Liability,
 }
+
+export type SyleniumModalProps = {
+  ledgerId: number;
+  closeModal?: () => void;
+};
