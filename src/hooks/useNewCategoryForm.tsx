@@ -1,15 +1,11 @@
 import { TransactionCategory } from '@/types.ts';
+import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
 import { createCategory } from '@/utils/transaction-categories.tsx';
 import { useForm } from '@mantine/form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 import { ZodType, z } from 'zod';
-
-type Props = {
-  ledgerId: number;
-  closeModal: () => void;
-};
 
 type NewCategorySchema = {
   name: string;
@@ -18,8 +14,11 @@ type NewCategorySchema = {
   initialSubName?: string;
 };
 
-export function useNewCategoryForm({ ledgerId, closeModal }: Props) {
+export function useNewCategoryForm(closeModal: () => void) {
   const [postError, setPostError] = useState<string | null>(null);
+
+  const { data: activeLedger } = useQuery(getActiveLedgerIdQueryOptions());
+  const ledgerId = activeLedger?.id ?? -1;
 
   const schema: ZodType<NewCategorySchema> = z.discriminatedUnion('isParent', [
     z
@@ -59,7 +58,8 @@ export function useNewCategoryForm({ ledgerId, closeModal }: Props) {
       void client.invalidateQueries({
         queryKey: ['categories', '/api/ledgers', ledgerId.toString()],
       });
-      closeModal();
+      if (closeModal) closeModal();
+      setPostError(null);
     },
     onError: (error) => setPostError(error.message),
   });

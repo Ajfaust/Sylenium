@@ -1,9 +1,7 @@
 import { CategoryAccordion } from '@/components/CategoryAccordion.tsx';
-import { NewCategoryForm } from '@/components/NewCategoryForm.tsx';
+import { NewCategoryModal } from '@/components/NewCategoryModal.tsx';
 import { getActiveLedgerIdQueryOptions } from '@/utils/ledgers.tsx';
 import { getAllCategoriesForLedgerQueryOptions } from '@/utils/transaction-categories.tsx';
-import { Button, Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
@@ -20,8 +18,6 @@ export const Route = createFileRoute('/_ledger/categories')({
 });
 
 function RouteComponent() {
-  const [opened, { open, close }] = useDisclosure();
-
   const { id } = Route.useLoaderData();
 
   const { data, isLoading, isError, error } = useSuspenseQuery(
@@ -37,14 +33,7 @@ function RouteComponent() {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="New Category">
-        <NewCategoryForm
-          ledgerId={id}
-          parentCategories={data.filter((c) => c.subcategories)}
-          closeModal={close}
-        />
-      </Modal>
-      <Button onClick={open}>New Category</Button>
+      <NewCategoryModal />
       <CategoryAccordion categories={data} />
     </>
   );
