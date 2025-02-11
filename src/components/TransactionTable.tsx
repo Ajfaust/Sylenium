@@ -24,7 +24,7 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
 
   return (
     data.length > 0 && (
-      <Table>
+      <Table striped>
         <Table.Thead>
           <Table.Tr>
             {columnNames.map((c) => (
@@ -33,19 +33,23 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {data.map((d) => (
-            <Table.Tr key={d.id}>
-              <Table.Td>{new Date(d.date).toLocaleDateString()}</Table.Td>
-              <Table.Td>{d.vendor.name}</Table.Td>
-              <Table.Td>{d.category.name}</Table.Td>
-              <Table.Td>{d.description}</Table.Td>
-              <Table.Td>{formatter.format(d.inflow)}</Table.Td>
-              <Table.Td>{formatter.format(d.outflow)}</Table.Td>
-              <Table.Td>
-                {d.cleared && <PiCheckCircleFill size={18} strokeWidth={1.5} />}
-              </Table.Td>
-            </Table.Tr>
-          ))}
+          {data
+            .sort((a, b) => (a.date > b.date ? -1 : 1))
+            .map((d) => (
+              <Table.Tr key={d.id}>
+                <Table.Td>{new Date(d.date).toLocaleDateString()}</Table.Td>
+                <Table.Td>{d.vendor.name}</Table.Td>
+                <Table.Td>{d.category.name}</Table.Td>
+                <Table.Td>{d.description}</Table.Td>
+                <Table.Td>{formatter.format(d.inflow)}</Table.Td>
+                <Table.Td>{formatter.format(d.outflow)}</Table.Td>
+                <Table.Td>
+                  {d.cleared && (
+                    <PiCheckCircleFill size={18} strokeWidth={1.5} />
+                  )}
+                </Table.Td>
+              </Table.Tr>
+            ))}
         </Table.Tbody>
       </Table>
     )

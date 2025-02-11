@@ -8,7 +8,7 @@ import {
   Text,
 } from '@mantine/core';
 import { Link } from '@tanstack/react-router';
-import { cloneElement, useState } from 'react';
+import { cloneElement } from 'react';
 import {
   PiBank,
   PiCaretRight,
@@ -24,9 +24,6 @@ interface NavbarProps extends AppShellNavbarProps {
 }
 
 export const Navbar = ({ ledgerId, accounts, ...props }: NavbarProps) => {
-  const [activeItem, setActiveItem] = useState(0);
-  const [activeChild, setActiveChild] = useState(-1);
-
   const navItems: Array<NavItem> = [
     {
       icon: PiHouse,
@@ -75,13 +72,12 @@ export const Navbar = ({ ledgerId, accounts, ...props }: NavbarProps) => {
         <Text size="xl">Hello</Text>
       </AppShell.Section>
       <AppShell.Section grow>
-        {navItems.map((item, index) => (
+        {navItems.map((item) => (
           <NavLink
             key={item.label}
             my={5}
             variant="filled"
             label={<Text>{item.label}</Text>}
-            active={index === activeItem}
             leftSection={item.icon && <item.icon size={25} strokeWidth={1.5} />}
             rightSection={
               item.children && (
@@ -92,30 +88,20 @@ export const Navbar = ({ ledgerId, accounts, ...props }: NavbarProps) => {
                 />
               )
             }
-            onClick={() => {
-              if (!item.children && item.label != 'Accounts')
-                setActiveItem(index);
-              setActiveChild(-1);
-            }}
             renderRoot={(props) => cloneElement(item.link, { ...props })}
             className="rounded-lg"
           >
             {item.children && (
               <div className={`border-dashed border-l border-l-blue-600`}>
-                {item.children().map((c, cIndex) => (
+                {item.children().map((c) => (
                   <NavLink
                     key={c.label}
                     variant="subtle"
                     m={5}
                     label={<Text>{c.label}</Text>}
-                    active={cIndex === activeChild}
                     leftSection={
                       c.icon && <c.icon size={15} strokeWidth={1.5} />
                     }
-                    onClick={() => {
-                      if (activeItem !== index) setActiveItem(index);
-                      if (c.label != 'New Account') setActiveChild(cIndex);
-                    }}
                     renderRoot={(props) => cloneElement(c.link, { ...props })}
                     className={`rounded-lg ${c.label == 'New Item' ? 'opacity-50 text-gray-500' : ''}`}
                   />

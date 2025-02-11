@@ -141,7 +141,7 @@ export const NewTransactionForm = ({
     mutationFn: (t: Partial<Transaction>) => createTransaction(t),
     onSuccess: () => {
       void client.invalidateQueries({
-        queryKey: ['account', '/api/financial-accounts', accountId],
+        queryKey: ['account', '/api/financial-accounts', accountId.toString()],
       });
       closeModal();
     },

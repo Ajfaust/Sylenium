@@ -6,7 +6,10 @@ async function getAllCategoriesForLedger(
 ): Promise<Array<TransactionCategory>> {
   return await fetch(`/api/ledgers/${ledgerId}/categories`)
     .then((response) => response.json())
-    .then((r) => r.categories)
+    .then((r) => {
+      console.log(r);
+      return r.categories;
+    })
     .catch((e) => console.log(e.message));
 }
 
