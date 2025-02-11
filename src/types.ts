@@ -44,9 +44,10 @@ export type Transaction = {
 
 export type TransactionCategory = {
   id: number;
+  ledgerId: number;
   parentId?: number;
   name: string;
-  subcategories?: Array<TransactionCategory>;
+  subcategories?: Array<Partial<TransactionCategory>>;
 };
 
 export type AccountCategory = {

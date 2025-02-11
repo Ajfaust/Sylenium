@@ -1,6 +1,18 @@
 import { TransactionCategory } from '@/types.ts';
 import { queryOptions } from '@tanstack/react-query';
 
+async function createCategory(category: Partial<TransactionCategory>) {
+  return await fetch('/api/transaction-categories', {
+    method: 'POST',
+    body: JSON.stringify(category),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((r) => r.json())
+    .catch((e) => console.log(e));
+}
+
 async function getAllCategoriesForLedger(
   ledgerId: string
 ): Promise<Array<TransactionCategory>> {
@@ -20,4 +32,4 @@ function getAllCategoriesForLedgerQueryOptions(ledgerId: string) {
   });
 }
 
-export { getAllCategoriesForLedgerQueryOptions };
+export { createCategory, getAllCategoriesForLedgerQueryOptions };
