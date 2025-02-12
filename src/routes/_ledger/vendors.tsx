@@ -7,20 +7,19 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_ledger/vendors')({
   loader: async ({ context: { queryClient } }) => {
-    const ledger = await queryClient.ensureQueryData(
+    const ledgerId = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = ledger?.id ?? -1;
 
-    return { id };
+    return { ledgerId };
   },
   component: VendorsComponent,
 });
 
 function VendorsComponent() {
-  const { id } = Route.useLoaderData();
+  const { ledgerId } = Route.useLoaderData();
   const { data, isLoading, isError, error } = useSuspenseQuery(
-    getAllVendorsForLedgerQueryOptions(id.toString())
+    getAllVendorsForLedgerQueryOptions(ledgerId.toString())
   );
 
   if (isError) throw error;
@@ -29,7 +28,7 @@ function VendorsComponent() {
 
   return (
     <>
-      <NewVendorModal ledgerId={id} />
+      <NewVendorModal ledgerId={ledgerId} />
       <VendorList vendors={data} />
     </>
   );

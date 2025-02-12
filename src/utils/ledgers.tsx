@@ -12,7 +12,9 @@ async function getLedgerById(id: string) {
 }
 
 async function getActiveLedgerId() {
-  return await fetch(`${api}/active`).then((response) => response.json());
+  return await fetch(`${api}/active`)
+    .then((response) => response.json())
+    .then((r) => r.id ?? -1);
 }
 
 function getLedgerByIdQueryOptions(id: string) {
@@ -30,7 +32,7 @@ function getLedgersQueryOptions() {
 }
 
 function getActiveLedgerIdQueryOptions() {
-  return queryOptions<Partial<Ledger>, Error>({
+  return queryOptions<number, Error>({
     queryKey: ['activeLedgerId', api],
     queryFn: getActiveLedgerId,
   });

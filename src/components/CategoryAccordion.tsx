@@ -33,7 +33,7 @@ const SubcategoryList = ({ categories: subcategories }: CategoryProps) => {
       {subcategories.map((sc, idx) => (
         <>
           {idx > 0 && <Divider my="md" />}
-          <Flex key={idx} justify="space-between">
+          <Flex key={sc.name} justify="space-between">
             {sc.name}
             <Menu
               offset={0}

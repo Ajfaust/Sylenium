@@ -36,8 +36,8 @@ type TransactionModalProps = {
 export const NewTransactionModal = ({ accountId }: TransactionModalProps) => {
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { data: activeLedger } = useQuery(getActiveLedgerIdQueryOptions());
-  const ledgerId = activeLedger?.id ?? -1;
+  const { data } = useQuery(getActiveLedgerIdQueryOptions());
+  const ledgerId = data ?? -1;
 
   const {
     data: categories,

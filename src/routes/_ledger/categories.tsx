@@ -7,21 +7,20 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_ledger/categories')({
   loader: async ({ context: { queryClient } }) => {
-    const result = await queryClient.ensureQueryData(
+    const ledgerId = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = result.id ?? -1;
 
-    return { id };
+    return { ledgerId };
   },
-  component: RouteComponent,
+  component: TransactionCategoriesComponent,
 });
 
-function RouteComponent() {
-  const { id } = Route.useLoaderData();
+function TransactionCategoriesComponent() {
+  const { ledgerId } = Route.useLoaderData();
 
   const { data, isLoading, isError, error } = useSuspenseQuery(
-    getAllCategoriesForLedgerQueryOptions(id.toString())
+    getAllCategoriesForLedgerQueryOptions(ledgerId.toString())
   );
 
   if (isError) {

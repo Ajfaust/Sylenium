@@ -8,20 +8,19 @@ import { Outlet, createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_ledger')({
   loader: async ({ context: { queryClient } }) => {
-    const ledger = await queryClient.ensureQueryData(
+    const ledgerId = await queryClient.ensureQueryData(
       getActiveLedgerIdQueryOptions()
     );
-    const id = ledger.id;
 
-    return { id };
+    return { ledgerId };
   },
   component: ActiveLedgerComponent,
 });
 
 function ActiveLedgerComponent() {
-  const { id } = Route.useLoaderData();
+  const { ledgerId } = Route.useLoaderData();
 
-  if (id == undefined) {
+  if (ledgerId == undefined) {
     throw new Error('Active ID is undefined');
   }
 
@@ -32,7 +31,7 @@ function ActiveLedgerComponent() {
     isLoading,
     isError,
     error,
-  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(id.toString()));
+  } = useSuspenseQuery(allAccountsForLedgerQueryOptions(ledgerId.toString()));
 
   if (isError) throw error;
 
@@ -64,7 +63,7 @@ function ActiveLedgerComponent() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar aria-label="Navbar">
-        <Navbar ledgerId={id} accounts={accounts} p="md" />
+        <Navbar ledgerId={ledgerId} accounts={accounts} p="md" />
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />
