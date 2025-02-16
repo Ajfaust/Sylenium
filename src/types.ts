@@ -1,42 +1,80 @@
+import { ReactElement } from 'react';
 import { IconType } from 'react-icons';
 
-export interface SidebarItems {
-  items: Array<SidebarItem>;
-}
+export type Account = {
+  id: number;
+  financialCategory: FinancialCategory;
+  ledger: Ledger;
+  ledgerId?: number;
+  faCategoryId?: number;
+  name: string;
+  transactions: Array<Transaction>;
+};
 
-export interface SidebarItem {
-  label: string;
-  href: string;
-  icon?: IconType;
-  children?: Array<SidebarItem>;
-}
+export type FinancialCategory = {
+  id: number;
+  name: string;
+  type: number;
+};
 
-export interface Transaction {
-  transactionId: number;
-  categoryId: number;
+export type Ledger = {
+  id: number;
+  name: string;
+  isActive: boolean;
+  accounts: Array<Account>;
+  vendors: Array<Vendor>;
+  transactionCategories: Array<TransactionCategory>;
+  financialCategories: Array<FinancialCategory>;
+};
+
+export type Transaction = {
+  id: number;
+  account: Account;
   accountId: number;
+  category: TransactionCategory;
+  categoryId: number;
+  vendor: Vendor;
+  vendorId: number;
   date: Date;
-  notes: string;
+  description: string;
   inflow: number;
   outflow: number;
   cleared: boolean;
-}
+};
 
-export interface Category {
-  categoryId: number;
+export type TransactionCategory = {
+  id: number;
+  ledgerId: number;
+  parentId?: number;
   name: string;
-  parentId: number | null;
-  subcategories?: Category[];
-}
+  subcategories?: Array<Partial<TransactionCategory>>;
+};
 
-export interface Account {
-  accountId: number;
+export type AccountCategory = {
+  id: number;
   name: string;
-  balance: number;
-  transactions?: Transaction[];
+  type: AccountType;
+};
+
+export type Vendor = {
+  id: number;
+  ledgerId: number;
+  name: string;
+};
+
+export type NavItem = {
+  label: string;
+  link: ReactElement;
+  icon?: IconType;
+  children?: () => Array<NavItem>;
+};
+
+export enum AccountType {
+  Asset,
+  Liability,
 }
 
-export enum ToastResult {
-  Success,
-  Error,
-}
+export type SyleniumModalProps = {
+  ledgerId: number;
+  closeModal?: () => void;
+};
